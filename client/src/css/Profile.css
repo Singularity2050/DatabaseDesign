@@ -1,0 +1,33 @@
+#profileArticle{
+    padding-left:30%;
+}
+#submitbtn{
+    width: 100px;
+    height: 30px;
+    color:white;
+    background-color:red;
+    font-weight: bold;
+}
+#plus{
+
+}
+#plus button{
+    font-weight: bold;
+    color:white;
+    background-color:red;
+    border:none;
+    width:50px;
+    height:30px;
+    margin-right:10px;
+}
+#facultyFont{
+    padding-top:0;
+}
+.facultyCourse{
+    font-size:20px;
+    width:500px;
+}
+.generalInfo{
+    font-size:20px;
+    width:250px;
+}
