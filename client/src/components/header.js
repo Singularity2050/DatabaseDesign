@@ -1,6 +1,6 @@
 
 import React from "react";
-
+import logo from '../image/stonyflix_logo.png'
 let createClass = require('create-react-class');
 ////////////
 // Header //
@@ -27,7 +27,7 @@ let Logo = createClass({
         return (
             <a href='/content'>
             <div id="logo" className="Logo">
-                <img src="../image/stonyflix_logo.png"/>
+                <img src={logo}/>
             </div>
             </a>
         );
