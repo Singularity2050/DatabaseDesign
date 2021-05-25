@@ -178,59 +178,59 @@ function Profile(userInfo){
             <br/>
             <br/>
             <article id='profileArticle'>
-            <h2>Edit Profile</h2>
-            <section>
-                <div className="box" >
-                    <h3>Profile photo</h3>
-                    <div id ='profileBox1'>
-                        <img src={selectedImage} id="profilePageImage" alt="none"/>
-                        <label for="inputBox">Choose new image</label>
-                        <input type="file" id="inputBox" onChange={handleChange} accept="image/png, image/jpeg, .jpg, .png"/>
-                        <a id="removeImage" onClick={deleteImage}>Remove image</a>
+                <h2>Edit Profile</h2>
+                <section>
+                    <div className="box" >
+                        <h3>Profile photo</h3>
+                        <div id ='profileBox1'>
+                            <img src={selectedImage} id="profilePageImage" alt="none"/>
+                            <label for="inputBox">Choose new image</label>
+                            <input type="file" id="inputBox" onChange={handleChange} accept="image/png, image/jpeg, .jpg, .png"/>
+                            <a id="removeImage" onClick={deleteImage}>Remove image</a>
+                        </div>
                     </div>
-                </div>
-            </section>
-            <section>
-                <div className="box" >
-                    <h3>NicKName</h3>
-                    <input type="text" className="longtext" className='generalInfo' id="profileName" onChange={handleNickName} value={nickName} required/>
-                </div>
-                <br/>
-            </section>
-            <section>
-                <div className="box" >
-                    <h3>MAJOR</h3>
-                    <select name='major' onChange={handleMajor} className='generalInfo' value={major}>
-                        <option value=''>Choose Your Major</option>
-                        <option value='CSE'>CSE</option>
-                        <option value='MEC'>MEC</option>
-                        <option value='AMS'>AMS</option>
-                        <option value='TSM'>TSM</option>
-                        <option value='FIT'>FIT</option>
-                    </select>
-                </div>
-                <br/>
-            </section>
+                </section>
+                <section>
+                    <div className="box" >
+                        <h3>NicKName</h3>
+                        <input type="text" className="longtext" className='generalInfo' id="profileName" onChange={handleNickName} value={nickName} required/>
+                    </div>
+                    <br/>
+                </section>
+                <section>
+                    <div className="box" >
+                        <h3>MAJOR</h3>
+                        <select name='major' onChange={handleMajor} className='generalInfo' value={major}>
+                            <option value=''>Choose Your Major</option>
+                            <option value='CSE'>CSE</option>
+                            <option value='MEC'>MEC</option>
+                            <option value='AMS'>AMS</option>
+                            <option value='TSM'>TSM</option>
+                            <option value='FIT'>FIT</option>
+                        </select>
+                    </div>
+                    <br/>
+                </section>
                 {userData.occupation == "Faculty" ?
                     <>
-                    <section>
+                        <section>
 
-                        <div>
-                            {faculty.map(e =>
-                                <>
-                                <h1 id='facultyFont'> Fauculty: Course</h1>
-                                <input type='text' name={cNum} flag='0' className='facultyCourse' placeholder='Course Name' value={e[0]} onChange={handleNewCourse}/><br/>
-                                <input type='text' name={cNum} flag='1'className='facultyCourse' placeholder='Course Description' value={e[1]} onChange={handleNewCourse} /><br/>
-                                <input type='text' name={cNum++} flag='2' className='facultyCourse' placeholder='Course Link'value={e[2]} onChange={handleNewCourse}/>
-                                </>
+                            <div>
+                                {faculty.map(e =>
+                                    <>
+                                        <h1 id='facultyFont'> Fauculty: Course</h1>
+                                        <input type='text' name={cNum} flag='0' className='facultyCourse' placeholder='Course Name' value={e[0]} onChange={handleNewCourse}/><br/>
+                                        <input type='text' name={cNum} flag='1'className='facultyCourse' placeholder='Course Description' value={e[1]} onChange={handleNewCourse} /><br/>
+                                        <input type='text' name={cNum++} flag='2' className='facultyCourse' placeholder='Course Link'value={e[2]} onChange={handleNewCourse}/>
+                                    </>
                                 )}
-                            <div id="plus">
-                                <button className="material-icons" onClick={addCourse}>add</button>
-                                <button className="material-icons" onClick={deleteCourse}>delete</button>
+                                <div id="plus">
+                                    <button className="material-icons" onClick={addCourse}>add</button>
+                                    <button className="material-icons" onClick={deleteCourse}>delete</button>
+                                </div>
                             </div>
-                        </div>
-                        <br/>
-                    </section>
+                            <br/>
+                        </section>
                         <br/>
                         <div id="btn">
                             <input type="submit" id="submitbtn" onClick={handleFacultyModeUpload} value="Save"/>
@@ -250,61 +250,61 @@ function Profile(userInfo){
                     </>
                     :
                     <>
-                    <section>
-                        <div className="box">
-                            <h3>MAJOR COURSE</h3>
-                            {majorCourseList.map(e =>
-                                < input
-                                    type="text"
-                                    name={mNum++}
-                                    className="longtext"
-                                    id="majorCourse1"
-                                    onChange={handleMajorCourse}
-                                    value={e}
-                                />
-                            )}
-                            <div id="plus">
-                                <button className="material-icons" onClick={addMajorCourse}>add</button>
-                                <button className="material-icons" onClick={deleteMajorCourse}>delete</button>
+                        <section>
+                            <div className="box">
+                                <h3>MAJOR COURSE</h3>
+                                {majorCourseList.map(e =>
+                                    < input
+                                        type="text"
+                                        name={mNum++}
+                                        className="longtext"
+                                        id="majorCourse1"
+                                        onChange={handleMajorCourse}
+                                        value={e}
+                                    />
+                                )}
+                                <div id="plus">
+                                    <button className="material-icons" onClick={addMajorCourse}>add</button>
+                                    <button className="material-icons" onClick={deleteMajorCourse}>delete</button>
+                                </div>
                             </div>
-                        </div>
-                        <br/>
-                        <div className="box">
-                            <h3>ELECTIVE COURSE</h3>
-                            {electiveCourseList.map(e =>
-                                <input
-                                    type="text"
-                                    className="longtext"
-                                    name={eNum++}
-                                    id="electiveCourse1"
-                                    onChange={handleElectiveCourse}
-                                    value={e}
-                                />
-                            )}
-                            <div id="plus">
-                                <button className="material-icons" onClick={addElectiveCourse}>add</button>
-                                <button className="material-icons" onClick={deleteElectiveCourse}>delete</button>
+                            <br/>
+                            <div className="box">
+                                <h3>ELECTIVE COURSE</h3>
+                                {electiveCourseList.map(e =>
+                                    <input
+                                        type="text"
+                                        className="longtext"
+                                        name={eNum++}
+                                        id="electiveCourse1"
+                                        onChange={handleElectiveCourse}
+                                        value={e}
+                                    />
+                                )}
+                                <div id="plus">
+                                    <button className="material-icons" onClick={addElectiveCourse}>add</button>
+                                    <button className="material-icons" onClick={deleteElectiveCourse}>delete</button>
+                                </div>
                             </div>
-                        </div>
-                        <br/>
-                    </section>
+                            <br/>
+                        </section>
 
-                    <br/>
-                    <div id="btn">
-                    <input type="submit" id="submitbtn" onClick={handleUpload} value="Save"/>
-                    <p id='studentMode'></p>
-                    <br/>
-                    <br/>
-                    <div>
-                    <GoogleLogout
-                    clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
-                    buttonText="Logout"
-                    className="logout"
-                    onLogoutSuccess={logout}
-                    >
-                    </GoogleLogout>
-                    </div>
-                    </div>
+                        <br/>
+                        <div id="btn">
+                            <input type="submit" id="submitbtn" onClick={handleUpload} value="Save"/>
+                            <p id='studentMode'></p>
+                            <br/>
+                            <br/>
+                            <div>
+                                <GoogleLogout
+                                    clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
+                                    buttonText="Logout"
+                                    className="logout"
+                                    onLogoutSuccess={logout}
+                                >
+                                </GoogleLogout>
+                            </div>
+                        </div>
                     </>
                 }
             </article>

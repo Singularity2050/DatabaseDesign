@@ -16,8 +16,8 @@ let Hero = createClass({
                     <h2> Fall Semester now available</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloremque id quam sapiente unde voluptatum alias vero debitis, magnam quis quod.</p>
                     <div className="button-wrapper">
-                        <HeroButton primary={true} text="Watch now" />
-                        <HeroButton primary={false} text="+ My list" />
+                        <HeroButton primary={true} text="Watch now" link="https://blackboard.stonybrook.edu"/>
+                        <HeroButton primary={false} text="My list" />
                     </div>
                 </div>
                 <div className="overlay"></div>
@@ -30,7 +30,7 @@ let Hero = createClass({
 let HeroButton = createClass({
     render: function() {
         return (
-            <a href="#" className="Button" data-primary={this.props.primary}>{this.props.text}</a>
+            <a href={this.props.link} target='_blank' className="Button" data-primary={this.props.primary}>{this.props.text}</a>
         );
     }
 })

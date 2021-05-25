@@ -15,9 +15,25 @@ function Main(props) {
         document.getElementById('googleHide').style ='display:block'
         userInfoAPIMethod(response.profileObj).then(r => {
             console.log(r)
+            const slec = [{
+                lectureCategory: "",
+                lectureDescription: "",
+                lectureLink: "",
+                lectureName: "",
+                professor: "",
+                type: "",
+                }]
+            const flec = [{
+                lectureCategory: "",
+                lectureDescription: "",
+                lectureLink: "",
+                lectureName: "",
+                professor: ""
+            }]
+            console.log(r[1] === "")
             sessionStorage.setItem('userData', JSON.stringify(r[0]))
-            sessionStorage.setItem('fLecture',JSON.stringify(r[1]))
-            sessionStorage.setItem('sLecture',JSON.stringify(r[2]))
+            sessionStorage.setItem('fLecture',JSON.stringify(r[1] === "" ? flec : r[1]))
+            sessionStorage.setItem('sLecture',JSON.stringify(r[2] === ""? slec: r[2]))
         })
     }
     const responseFailGoogle = (r) =>{
@@ -50,15 +66,15 @@ function Main(props) {
     }
 
 //
-const tab1 = (tapContentItemName) =>{
-    setTab1Show(tapContentItemName)
-    setTab2Show('tab-content-item')
-    setTab3Show('tab-content-item')
-    setTab1Border('tab-item tab-border')
-    setTab2Border('tab-item')
-    setTab3Border('tab-item')
-}
-const tab2 = (tapContentItemName) =>{
+    const tab1 = (tapContentItemName) =>{
+        setTab1Show(tapContentItemName)
+        setTab2Show('tab-content-item')
+        setTab3Show('tab-content-item')
+        setTab1Border('tab-item tab-border')
+        setTab2Border('tab-item')
+        setTab3Border('tab-item')
+    }
+    const tab2 = (tapContentItemName) =>{
         setTab1Show('tab-content-item')
         setTab2Show(tapContentItemName)
         setTab3Show('tab-content-item')
@@ -66,14 +82,14 @@ const tab2 = (tapContentItemName) =>{
         setTab2Border('tab-item tab-border')
         setTab3Border('tab-item')
     }
-const tab3 = (tapContentItemName) =>{
-    setTab1Show('tab-content-item')
-    setTab2Show('tab-content-item')
-    setTab3Show(tapContentItemName)
-    setTab1Border('tab-item')
-    setTab2Border('tab-item')
-    setTab3Border('tab-item tab-border')
-}
+    const tab3 = (tapContentItemName) =>{
+        setTab1Show('tab-content-item')
+        setTab2Show('tab-content-item')
+        setTab3Show(tapContentItemName)
+        setTab1Border('tab-item')
+        setTab2Border('tab-item')
+        setTab3Border('tab-item tab-border')
+    }
 
     return(
         <div className="App">
@@ -88,25 +104,25 @@ const tab3 = (tapContentItemName) =>{
                 </div>
                 <div className="showcase-top">
                     <div id='googleLogin'>
-                    <GoogleLogin
-                        clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
-                        buttonText="Login"
-                        onSuccess={responseGoogle}
-                        onFailure={responseFailGoogle}
-                        cookiePolicy={'single_host_origin'}
-                        className='login'
-                        isSignedIn={true}
-                    />
+                        <GoogleLogin
+                            clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
+                            buttonText="Login"
+                            onSuccess={responseGoogle}
+                            onFailure={responseFailGoogle}
+                            cookiePolicy={'single_host_origin'}
+                            className='login'
+                            isSignedIn={true}
+                        />
                     </div>
                     <div id='googleHide'>
-                    <GoogleLogout
-                        clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
-                        buttonText="Logout"
-                        style="display:none"
-                        className="logout"
-                        onLogoutSuccess={logout}
-                    >
-                    </GoogleLogout>
+                        <GoogleLogout
+                            clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
+                            buttonText="Logout"
+                            style="display:none"
+                            className="logout"
+                            onLogoutSuccess={logout}
+                        >
+                        </GoogleLogout>
                     </div>
                     <p id='failure'></p>
                 </div>

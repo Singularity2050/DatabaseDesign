@@ -26,9 +26,9 @@ let Logo = createClass({
     render: function() {
         return (
             <a href='/content'>
-            <div id="logo" className="Logo">
-                <img src={logo}/>
-            </div>
+                <div id="logo" className="Logo">
+                    <img src={logo}/>
+                </div>
             </a>
         );
     }
@@ -43,8 +43,11 @@ let Navigation = createClass({
                     <ul>
                         <li>Browse</li>
                         <li>MY COURSE</li>
-                        <li>Top picks</li>
-                        <li>Recent</li>
+                        <li>CSE Course</li>
+                        <li>AMS Course</li>
+                        <li>BUS Course</li>
+                        <li>MEC Course</li>
+                        <li>TSM Course</li>
                     </ul>
                 </nav>
             </div>
