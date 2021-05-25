@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import '../css/Home.css';
 import {GoogleLogin, GoogleLogout }from 'react-google-login';
 import { userInfoAPIMethod} from "../api/client"
+import logo from '../image/stonyflix_logo.png'
 function Main(props) {
     const [tab1Show, setTab1Show] = useState('tab-content-item show');
     const [tab2Show, setTab2Show] = useState('tab-content-item');
@@ -95,7 +96,7 @@ function Main(props) {
         <div className="App">
             <header className="showcase">
                 <div className="showcase-top">
-                    <img src="https://i.ibb.co/r5krrdz/logo.png" alt=""/>
+                    <img src={logo}/>
                 </div>
                 <div className="showcase-content">
                     <h1>See what's next Assignment</h1>

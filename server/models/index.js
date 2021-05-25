@@ -7,6 +7,7 @@ const config = require(path.join(__dirname,'..','/config/config.js'))[env];
 const Users = require('./Users');
 const Lecture = require('./Lecture');
 const rUserLecture = require('./rUserLecture');
+const Students = require('./Students');
 
 const db = {};
 const sequelize = new Sequelize(
@@ -19,10 +20,12 @@ db.Sequelize = Sequelize;
 db.Users = Users;
 db.Lecture = Lecture;
 db.rUserLecture = rUserLecture;
+db.Students = Students;
 
 Users.init(sequelize);
 Lecture.init(sequelize);
 rUserLecture.init(sequelize);
+Students.init(sequelize);
 
 // //noti
 Users.hasMany(Lecture,{foreignKey:'UserId',sourceKey:'id'})
