@@ -57,7 +57,7 @@ function Item(e){
     console.log(e);
         return (
             <div className="Item"  style={{backgroundImage: 'url(' + e.imageLink + ')'}} >
-                <a href={e.lecture.lectureLink} target='_blank'>
+                <a href={e.lecture.lectureLink} rel="noopener noreferrer" target='_blank'>
                     <div className="overlay">
                         <div className="title">{e.lecture.lectureName}</div>
                         {/*<div className="rating">{this.props.score} / 10</div>*/}

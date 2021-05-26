@@ -5,11 +5,6 @@ import MainPage from './page/mainPage';
 import Content from './page/contentPage';
 import Profile from './page/profile';
 import './css/ContentPage.css'
-import Header from "./components/header";
-import MainPost from "./components/mainPost"
-import TitleList from "./components/titleList"
-
-let createClass = require('create-react-class');
 
 const NoMatch = ({location}) => (<div><strong>Error!</strong> No route found matching:<div><code>{location.pathname}</code></div></div>);
 
@@ -23,8 +18,7 @@ class App extends React.Component {
     state = {user: this.props.user, lecture:this.props.lecture}
 
     constructor(props) {
-        super(props);
-        const apiKey = '87dfa1c669eea853da609d4968d294be';
+        super(props);//
         this.getInitialState = this.getInitialState.bind(this);
         this.performSearch = this.performSearch.bind(this);
     }

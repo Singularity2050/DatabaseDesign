@@ -30,7 +30,7 @@ let Hero = createClass({
 let HeroButton = createClass({
     render: function() {
         return (
-            <a href={this.props.link} target='_blank' className="Button" data-primary={this.props.primary}>{this.props.text}</a>
+            <a href={this.props.link} rel="noopener noreferrer" target='_blank' className="Button" data-primary={this.props.primary}>{this.props.text}</a>
         );
     }
 })

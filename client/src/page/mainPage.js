@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import '../css/Home.css';
 import {GoogleLogin, GoogleLogout }from 'react-google-login';
-import { userInfoAPIMethod} from "../api/client"
 import logo from '../image/stonyflix_logo.png'
+import {loginStatus, logout, responseFailGoogle, responseGoogle} from "../utils/loginFunction";
 function Main(props) {
     const [tab1Show, setTab1Show] = useState('tab-content-item show');
     const [tab2Show, setTab2Show] = useState('tab-content-item');
@@ -11,47 +11,6 @@ function Main(props) {
     const [tab2Border, setTab2Border] = useState('tab-item');
     const [tab3Border, setTab3Border] = useState('tab-item');
 
-    const responseGoogle = (response) => {
-        document.getElementById('googleLogin').style= 'display:none'
-        document.getElementById('googleHide').style ='display:block'
-        userInfoAPIMethod(response.profileObj).then(r => {
-            console.log(r)
-            const slec = [{
-                lectureCategory: "",
-                lectureDescription: "",
-                lectureLink: "",
-                lectureName: "",
-                professor: "",
-                type: "",
-                }]
-            const flec = [{
-                lectureCategory: "",
-                lectureDescription: "",
-                lectureLink: "",
-                lectureName: "",
-                professor: ""
-            }]
-            console.log(r[1] === "")
-            sessionStorage.setItem('userData', JSON.stringify(r[0]))
-            sessionStorage.setItem('fLecture',JSON.stringify(r[1] === "" ? flec : r[1]))
-            sessionStorage.setItem('sLecture',JSON.stringify(r[2] === ""? slec: r[2]))
-        })
-    }
-    const responseFailGoogle = (r) =>{
-        loginStatus("Login Failed");
-    }
-    const loginStatus = () =>{
-        const statusText = document.getElementById('failure');
-        statusText.innerText =props.message;
-        const removeText =statusText.childNodes[0];
-        setTimeout(function(){removeText.remove()},2000);
-    }
-
-    const logout = (res) =>{
-        document.getElementById('googleLogin').style= 'display:block'
-        document.getElementById('googleHide').style ='display:none'
-        sessionStorage.clear();
-    }
 // Select tab content item
     const selectItem = (e) => {
         // Grab content item from DOM
@@ -96,7 +55,7 @@ function Main(props) {
         <div className="App">
             <header className="showcase">
                 <div className="showcase-top">
-                    <img src={logo}/>
+                    {logo}
                 </div>
                 <div className="showcase-content">
                     <h1>See Your Next Lecture & Assignment</h1>
@@ -119,7 +78,7 @@ function Main(props) {
                         <GoogleLogout
                             clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
                             buttonText="Logout"
-                            style="display:none"
+                            Style="display:none"
                             className="logout"
                             onLogoutSuccess={logout}
                         >

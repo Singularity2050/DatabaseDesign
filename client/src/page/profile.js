@@ -32,7 +32,7 @@ function Profile(userInfo){
     sLecture = [JSON.parse(sessionStorage.getItem('sLecture'))];
     console.log(sLecture);
     sLecture.forEach( e =>{
-        e.type == "Major" ? mContainer.push(e.lectureName): eContainer.push(e.lectureName);
+        e.type === "Major" ? mContainer.push(e.lectureName): eContainer.push(e.lectureName);
     })
     let [majorCourseList,setMajorCourseList] = useState(mContainer);
     let [electiveCourseList, setElectiveCourseList] = useState(eContainer);
@@ -186,14 +186,14 @@ function Profile(userInfo){
                             <img src={selectedImage} id="profilePageImage" alt="none"/>
                             <label for="inputBox">Choose new image</label>
                             <input type="file" id="inputBox" onChange={handleChange} accept="image/png, image/jpeg, .jpg, .png"/>
-                            <a id="removeImage" onClick={deleteImage}>Remove image</a>
+                            <div id="removeImage"  onClick={deleteImage}>Remove image</div>
                         </div>
                     </div>
                 </section>
                 <section>
                     <div className="box" >
                         <h3>NicKName</h3>
-                        <input type="text" className="longtext" className='generalInfo' id="profileName" onChange={handleNickName} value={nickName} required/>
+                        <input type="text" className='generalInfo' id="profileName" onChange={handleNickName} value={nickName} required/>
                     </div>
                     <br/>
                 </section>
@@ -211,7 +211,7 @@ function Profile(userInfo){
                     </div>
                     <br/>
                 </section>
-                {userData.occupation == "Faculty" ?
+                {userData.occupation === "Faculty" ?
                     <>
                         <section>
 

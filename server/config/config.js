@@ -4,7 +4,7 @@ module.exports = {
 
     development: {
         username: "root",
-        password: "root",
+        password: "",
         database: "sunyflix",
         host: "localhost",
         dialect: "mysql",
@@ -12,7 +12,7 @@ module.exports = {
     },
     production: {
         username: "root",
-        password: "root",
+        password: "",
         database: "sunyflix",
         host: "localhost",
         dialect: "mysql",

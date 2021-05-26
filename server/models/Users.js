@@ -4,11 +4,6 @@ const Sequelize = require('sequelize');
 module.exports = class User extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
-            uid:{
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                primaryKey: true,
-            },
             uname:{
                 type: Sequelize.STRING(45),
                 allowNull: false,
@@ -32,6 +27,7 @@ module.exports = class User extends Sequelize.Model {
             image:{
                 type: Sequelize.STRING(300),
             },
+
             isStudent:{
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
@@ -40,7 +36,6 @@ module.exports = class User extends Sequelize.Model {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
             },
-
         }, {
             sequelize,
             timestamps: true,
@@ -50,8 +45,7 @@ module.exports = class User extends Sequelize.Model {
             paranoid: true,
             charset: 'utf8',
             collate: 'utf8_general_ci',
-        });
-    }
-};
+        })
+    }};
 
 

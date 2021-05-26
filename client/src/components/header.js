@@ -1,6 +1,7 @@
 
 import React from "react";
 import logo from '../image/stonyflix_logo.png'
+import Dropdown from "./dropdown";
 let createClass = require('create-react-class');
 ////////////
 // Header //
@@ -27,7 +28,7 @@ let Logo = createClass({
         return (
             <a href='/content'>
                 <div id="logo" className="Logo">
-                    <img src={logo}/>
+                    <img src={logo} alt=""/>
                 </div>
             </a>
         );
@@ -43,11 +44,7 @@ let Navigation = createClass({
                     <ul>
                         <li>Browse</li>
                         <li>MY COURSE</li>
-                        <li>CSE Course</li>
-                        <li>AMS Course</li>
-                        <li>BUS Course</li>
-                        <li>MEC Course</li>
-                        <li>TSM Course</li>
+                        {Dropdown()}
                     </ul>
                 </nav>
             </div>
@@ -73,14 +70,14 @@ let UserProfile = createClass({
             <div className="UserProfile">
                 <div className="User">
                     <div className="name">{this.props.user}</div>
-                    <div className="image"><a href='/profile'><img src={this.props.image} /></a></div>
+                    <div className="image"><a href='/profile'><img src={this.props.image} alt=""/></a></div>
                 </div>
                 <div className="UserProfile-menu">
                     <div className="UserProfileSwitch">
                         <ul>
                             <li>
                                 <div className="UserProfile-image">
-                                    <img src="http://lorempixel.com/96/96" />
+                                    <img src="http://lorempixel.com/96/96" alt=""/>
                                 </div>
                                 <div className="UserProfile-name">
                                     Alexander
@@ -88,7 +85,7 @@ let UserProfile = createClass({
                             </li>
                             <li>
                                 <div className="UserProfile-image">
-                                    <img src="http://lorempixel.com/96/96" />
+                                    <img src="http://lorempixel.com/96/96" alt=""/>
                                 </div>
                                 <div className="UserProfile-name">
                                     Mattias
