@@ -1,28 +1,28 @@
+
 const Sequelize = require('sequelize');
 
-module.exports = class Prof_Majors extends Sequelize.Model {
+module.exports = class Exams extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
-            mid: {
+            eid:{
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                unique: false
+                primaryKey: true
             },
-            mname: {
+            ename:{
                 type: Sequelize.STRING(45),
                 allowNull: false,
-                unique: true,
+                unique: false,
             },
-
         }, {
             sequelize,
             timestamps: true,
             underscored: false,
-            modelName: 'Stu_Majors',
-            tableName: 'Stu_Majors',
+            modelName: 'Exams',
+            tableName: 'Exams',
             paranoid: true,
             charset: 'utf8',
             collate: 'utf8_general_ci',
         });
     }
-}
+};

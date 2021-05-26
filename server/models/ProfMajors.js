@@ -1,30 +1,25 @@
 const Sequelize = require('sequelize');
 
-module.exports = class Professors extends Sequelize.Model {
+module.exports = class ProfMajors extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
-            uid: {
+            pmid: {
                 type: Sequelize.INTEGER,
+                allowNull: false,
+                unique: false
+            },
+            pmname: {
+                type: Sequelize.STRING(45),
                 allowNull: false,
                 unique: true,
-            },
-            upload_permission: {
-                type: Sequelize.BOOLEAN,
-                allowNull: true,
-                unique: false
-            },
-            mid: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                unique: false
             },
 
         }, {
             sequelize,
             timestamps: true,
             underscored: false,
-            modelName: 'Professors',
-            tableName: 'Professors',
+            modelName: 'ProfMajors',
+            tableName: 'ProfMajors',
             paranoid: true,
             charset: 'utf8',
             collate: 'utf8_general_ci',

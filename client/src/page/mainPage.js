@@ -99,7 +99,7 @@ function Main(props) {
                     <img src={logo}/>
                 </div>
                 <div className="showcase-content">
-                    <h1>See what's next Assignment</h1>
+                    <h1>See Your Next Lecture & Assignment</h1>
                     <p>Watch lecture anywhere.<br/> Drop Anytime</p>
                     <a href="/content" onClick={loginStatus} className="btn btn-xl">Watch For 4 Year <i className="fas fa-chevron-right btn-icon"></i></a>
                 </div>
@@ -140,7 +140,7 @@ function Main(props) {
                     </div>
                     <div id="tab-3" className={tab3Border} onClick={selectItem}>
                         <i className="fas fa-tags fa-3x"></i>
-                        <p className="hide-sm">Pick your Assignment</p>
+                        <p className="hide-sm">Select Your Lecture</p>
                     </div>
                 </div>
             </section>
@@ -151,10 +151,9 @@ function Main(props) {
                         <div className="tab-1-content-inner">
                             <div>
                                 <p className="text-lg">
-                                    If you decide Netflix isn't for you - no problem. No commitment.
-                                    Cancel online anytime.
+                                    If you decide college isn't for you - no problem. No commitment.
+                                    Drop out anytime!
                                 </p>
-                                <a href="/content" className="btn btn-lg">Watch Free For 30 Days</a>
                             </div>
                             <img src="https://i.ibb.co/J2xDJV7/tab-content-1.png" alt=""/>
                         </div>
