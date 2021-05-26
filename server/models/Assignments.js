@@ -4,16 +4,15 @@ const Sequelize = require('sequelize');
 module.exports = class Assignments extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
-            aid:{
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                primaryKey: true
-            },
-            aname:{
+
+            name:{
                 type: Sequelize.STRING(45),
                 allowNull: false,
                 unique: false,
             },
+            dueDate:{
+                type:Date
+            }
         }, {
             sequelize,
             timestamps: true,

@@ -36,12 +36,13 @@ router.post('/google',async(req,res) =>{
         res.json(data)
     }else{
         myLecture = await rUserLecture.findAll({where:{UserId:userData.id}})
-
-        for (const e of myLecture) {
-            console.log(e.dataValues);
-            const course = await Lecture.findOne({where:{id: e.dataValues.LectureId}})
-            course.dataValues.type = e.dataValues.lectureType;
-            lecture.push(course.dataValues);
+        if(myLecture){
+            for (const e of myLecture) {
+                console.log(e.dataValues);
+                const course = await Lecture.findOne({where:{id: e.dataValues.LectureId}})
+                course.dataValues.type = e.dataValues.lectureType;
+                lecture.push(course.dataValues);
+            }
         }
         console.log(lecture);
         data  = [userData,'',lecture];
