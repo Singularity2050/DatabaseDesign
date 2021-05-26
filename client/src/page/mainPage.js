@@ -55,7 +55,7 @@ function Main(props) {
         <div className="App">
             <header className="showcase">
                 <div className="showcase-top">
-                    {logo}
+                    <img src={logo} alt={''}/>
                 </div>
                 <div className="showcase-content">
                     <h1>See Your Next Lecture & Assignment</h1>
