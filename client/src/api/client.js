@@ -14,9 +14,47 @@ export const userInfoAPIMethod = (userInfo,success) =>{
         .then(parseJSON)
         .then(success);
 }
+export const studentInfoAPIMethod = (id,success) =>{
+    return fetch(`/api/auth/studentInfo?`+{id},{
+        ...defaultHeaders,
+    }).then(checkStatus)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(success);
+}
+export const facultyInfoAPIMethod = (id,success) =>{
+    return fetch(`/api/auth/facultyInfo?`+{id},{
+        ...defaultHeaders,
+    }).then(checkStatus)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(success);
+}
+export const getCourseAPIMethod = (major,success) =>{
+    return fetch(`/api/course/`+major,{
+        ...defaultHeaders,
+    }).then(checkStatus)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(success);
+}
 
-
-
+export const deleteMyCourseAPI = (courseId,studentId,success) =>{
+    return fetch('/api/deleteMyCourse/'+courseId+'/'+studentId,{
+        ...defaultHeaders,
+    }).then(checkStatus)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(success);
+}
+export const addMyCourseAPI = (courseId,studentId,success) =>{
+    return fetch('/api/addMyCourse/'+courseId+'/'+studentId,{
+        ...defaultHeaders,
+    }).then(checkStatus)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(success);
+}
 //
 // export const getDataAPIMethod = (success) => {
 //     return fetch('/api/questions',{
@@ -48,6 +86,8 @@ function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response;
     } else {
+
+
         const error = new Error(`HTTP Error: ${response.statusText}`);
         error.status = response.statusText;
         error.response = response;

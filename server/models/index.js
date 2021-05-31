@@ -4,18 +4,6 @@ const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
 const config = require(path.join(__dirname,'..','/config/config.js'))[env];
 
-const Users = require('./Users');
-const Lecture = require('./Lecture');
-const rUserLecture = require('./rUserLecture');
-const Assignments = require('./Assignments');
-const Exams = require('./Exams');
-const Have = require('./Have');
-const ProfMajors = require('./ProfMajors');
-const StuMajors = require('./StuMajors');
-const Takes = require('./Takes');
-const Teaches = require('./Teaches');
-const Courses = require('./Courses');
-
 const db = {};
 const sequelize = new Sequelize(
     config.database, config.username, config.password, config,
@@ -23,45 +11,45 @@ const sequelize = new Sequelize(
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+const Users = require('./Users')(sequelize,Sequelize);
+const Assignments = require('./Assignments')(sequelize,Sequelize);
+const Exams = require('./Exams')(sequelize,Sequelize);
+const Have = require('./Have')(sequelize,Sequelize);
+const Faculty = require('./Faculty')(sequelize,Sequelize);
+const Student = require('./Student')(sequelize,Sequelize);
+const Takes = require('./Takes')(sequelize,Sequelize);
+const Teaches = require('./Teaches')(sequelize,Sequelize);
+const Courses = require('./Courses')(sequelize,Sequelize);
+const HaveExam = require('./HaveExam')(sequelize,Sequelize);
 
 db.Users = Users;
-db.Lecture = Lecture;
-db.rUserLecture = rUserLecture;
 db.Assignments = Assignments;
 db.Exams = Exams;
 db.Have = Have;
-db.ProfMajors = ProfMajors;
-db.StuMajors = StuMajors;
+db.Faculty = Faculty;
+db.Student = Student;
 db.Takes = Takes;
 db.Teaches = Teaches;
 db.Courses = Courses;
+db.HaveExam = HaveExam;
+console.log(db.Users);
+//---------------------------------------------------------------------------------------------------------
+// Key Constraint
 
-Users.init(sequelize);
-Lecture.init(sequelize);
-rUserLecture.init(sequelize);
-Assignments.init(sequelize);
-Exams.init(sequelize);
-Have.init(sequelize);
-ProfMajors.init(sequelize);
-StuMajors.init(sequelize);
-Takes.init(sequelize);
-Teaches.init(sequelize);
-Courses.init(sequelize);
+//User
+db.Student.belongsTo(db.Users,{foreignKey:'uid'});// uid is created automatically in the Student Table
+db.Faculty.belongsTo(db.Users,{foreignKey:'uid'});// uid is created automatically in the Faculty Table
+//Teaches m:n
+db.Courses.belongsToMany(db.Faculty,{through:'Teaches'}); // CourseId -> Teaches
+db.Faculty.belongsToMany(db.Courses,{through:'Teaches'}); // FacultyId ->Teaches
 
-// //noti
-//Users.hasMany(Lecture,{foreignKey:'UserId',sourceKey:'id'})
-//Lecture.belongsTo(Users,{foreignKey:'UserId',sourceKey:'id'})
 
-Users.belongsTo(StuMajors,{foreignKey:'smid'});
-Users.belongsTo(ProfMajors,{foreignKey:'pmid'});
-Teaches.belongsTo(Users, {foreignKey:'uid'});
-Teaches.belongsTo(Courses, {foreignKey:'cid'});
-Takes.belongsTo(Users, {foreignKey:'uid'});
-Takes.belongsTo(Courses, {foreignKey:'cid'});
-Have.belongsTo(Assignments, {foreignKey:'aid'});
-Have.belongsTo(Exams, {foreignKey:'eid'});
+console.log(Courses);
+db.Student.belongsToMany(db.Courses,{through:'Takes'}); // 1:n relation. one Student can have multiple Courses through Takes
 
-//Users.belongsToMany(Lecture,{through:'rUserLecture'});
-//Lecture.belongsToMany(Users,{through:'rUserLecture'});
-
+//Assignment
+db.Assignments.belongsToMany(db.Courses,{through:'Have'});//1:n relation one Course can have multiple Assignment through Have
+//Exam
+db.Exams.belongsToMany(db.Courses,{through:'HaveExam'});// 1:n relation one Course can have multiple Exam though HaveExam
+//---------------------------------------------------------------------------------------------------------
 module.exports = db;

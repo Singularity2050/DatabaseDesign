@@ -4,6 +4,7 @@ import {Route, Redirect, Switch} from 'react-router-dom';
 import MainPage from './page/mainPage';
 import Content from './page/contentPage';
 import Profile from './page/profile';
+import Courses from './page/courses';
 import './css/ContentPage.css'
 
 const NoMatch = ({location}) => (<div><strong>Error!</strong> No route found matching:<div><code>{location.pathname}</code></div></div>);
@@ -15,7 +16,6 @@ const NoMatch = ({location}) => (<div><strong>Error!</strong> No route found mat
 
 // Container
 class App extends React.Component {
-    state = {user: this.props.user, lecture:this.props.lecture}
 
     constructor(props) {
         super(props);//
@@ -50,32 +50,35 @@ class App extends React.Component {
         });}
 
     render() {
-        if(sessionStorage.getItem('userData') == null){
-            return (
-                <Switch>
-                    <Route path='/home' render={() => <MainPage message="Please Login !!"/>}/>
-
-                    <Route path='/content' render={() => (
-                        <Redirect to='/home'/>)
-                    }/>
-                    <Route path='/profile' render={() =>
-                        (<Redirect to='/home'/>)
-                    }/>
-                    <Route exact path='/' render={() => (<Redirect to='/home'/>)}/>
-                    <Route component={NoMatch}/>
-                </Switch>
-
-            );
-        }else {
+        // if(sessionStorage.getItem('userData') == null){
+        //     return (
+        //         <Switch>
+        //             <Route path='/home' render={() => <MainPage message="Please Login !!"/>}/>
+        //
+        //             <Route path='/content' render={() => (
+        //                 <Redirect to='/home'/>)
+        //             }/>
+        //             <Route path='/profile' render={() =>
+        //                 (<Redirect to='/home'/>)
+        //             }/>
+        //             <Route exact path='/' render={() => (<Redirect to='/home'/>)}/>
+        //             <Route component={NoMatch}/>
+        //         </Switch>
+        //
+        //     );
+        // }else {
             return (
                 <Switch>
                     <Route path='/home' render={() => <MainPage message=""/>}/>
 
                     <Route path='/content' render={() =>
-                        <Content user={this.state.user} lecture={this.state.lecture} function={this.performSearch}/>
+                        <Content function={this.performSearch}/>
                     }/>
                     <Route path='/profile' render={() =>
-                        <Profile user={this.state.user} function={this.performSearch}/>
+                        <Profile function={this.performSearch}/>
+                    }/>
+                    <Route path='/courses/:major' render={() =>
+                        <Courses/>
                     }/>
                     <Route exact path='/' render={() => (<Redirect to='/home'/>)}/>
                     <Route component={NoMatch}/>
@@ -83,7 +86,7 @@ class App extends React.Component {
 
             );
         }
-    }
+    // }
 };
 
 

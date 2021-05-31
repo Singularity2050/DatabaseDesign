@@ -1,18 +1,12 @@
 const Sequelize = require('sequelize');
-module.exports = class Courses extends Sequelize.Model {
-    static init(sequelize) {
-        return super.init({
-            cid:{
-                type: Sequelize.STRING(45),
-                allowNull: false,
-                primaryKey: true,
-            },
+module.exports = (sequelize,DataTypes) => {
+    const Courses = sequelize.define('Courses',{
             cname:{
                 type: Sequelize.STRING(45),
                 allowNull: false,
                 unique:false,
             },
-            zoomlink:{
+            zoomLink:{
                 type: Sequelize.STRING(100),
                 allowNull: false,
                 unique:false,
@@ -30,12 +24,9 @@ module.exports = class Courses extends Sequelize.Model {
         }, {
             sequelize,
             timestamps: true,
-            underscored: false,
-            modelName: 'Courses',
-            tableName: 'Courses',
-            paranoid: true,
             charset: 'utf8',
             collate: 'utf8_general_ci',
         })
-    }
+
+    return Courses;
 }

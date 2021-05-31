@@ -36,6 +36,7 @@ export default function CustomDropdown(props) {
         if (props && props.onClick) {
             props.onClick(param);
         }
+        window.location.href = '/courses/'+param;
     };
     const handleCloseAway = (event) => {
         if (anchorEl.contains(event.target)) {

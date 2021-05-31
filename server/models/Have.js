@@ -1,17 +1,14 @@
 const Sequelize = require('sequelize');
 
-module.exports = class Have extends Sequelize.Model {
-    static init(sequelize) {
-        return super.init({
+module.exports = (sequelize,DataTypes) => {
+    const Have = sequelize.define('Have',{
         }, {
             sequelize,
             timestamps: true,
             underscored: false,
-            modelName: 'Lecture',
-            tableName: 'Lectures',
             paranoid: true,
             charset: 'utf8',
             collate: 'utf8_general_ci',
         })
-    }
+    return Have;
 }

@@ -7,8 +7,6 @@ const express = require("express"),
     morgan = require('morgan'),
     session = require('express-session'),
     dotenv = require('dotenv'),
-    passport = require('passport'),
-    hpp = require('hpp'),
     ExpressError = require('./utils/ExpressError'),
     RedisStore = require('connect-redis')(session),
     redis = require('redis');
@@ -27,15 +25,15 @@ dotenv.config();
 const pageRouter = require('./routes/post');
 const authRouter = require('./routes/auth');
 // const postRouter = require('./routes/post');
-const passportConfig = require('./passport');
-const passportGoogleConfig = require('./passport/googleStrategy');
+// const passportConfig = require('./passport');
+// const passportGoogleConfig = require('./passport/googleStrategy');
 const sequelize = require('./models').sequelize;
 //
 const app = express();
 //
 //
-passportConfig();
-passportGoogleConfig();
+// passportConfig();
+// passportGoogleConfig();
 app.set("port", process.env.PORT || 5000);
 app.set('view engine', 'ejs');
 app.set("views",path.join(__dirname,'views'));
@@ -49,12 +47,12 @@ sequelize.sync({ force: false })
     });
 
 //
-if(process.env.NODE_ENV === 'production'){
-    app.use(morgan('combined'));
-    app.use(hpp(undefined));
-}else{
-    app.use(morgan('dev'));
-}
+// if(process.env.NODE_ENV === 'production'){
+//     app.use(morgan('combined'));
+//     app.use(hpp(undefined));
+// }else{
+//     app.use(morgan('dev'));
+// }
 //
 app.use(express.static(path.join(__dirname,"public")));
 app.use(express.urlencoded({

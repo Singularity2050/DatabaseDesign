@@ -7,50 +7,60 @@ import Header from "../components/header";
 
 function Profile(userInfo){
     const userData = JSON.parse(sessionStorage.getItem('userData'));
+    const identity = JSON.parse(sessionStorage.getItem('identity'));
+    let [name, setName] = useState(userData.name);
     let [nickName, setNickName] = useState(userData.nickName);
+    let [occupation,setOccupation] = useState(userData.occupation);
+    let [subData,setSubData] = useState(userData.occupation === 'Student'? identity.studentId: identity.office);
     let [major,setMajor] = useState(userData.major);
     let [selectedImage, setSelectedFile] = useState(userData.image);
     let [postImage, setPostImage] = useState(userData.image)
-    let fLectureData = JSON.parse(sessionStorage.getItem('fLecture'));
-    let fcontainer = [];
-    if(fLectureData.length>0){
-        fLectureData.forEach(e =>{
-            const oneCourse =[];
-            oneCourse.push(e.lectureName);
-            oneCourse.push(e.lectureDescription);
-            oneCourse.push(e.lectureLink);
-            oneCourse.push(e.id);
-            fcontainer.push(oneCourse);
-        })
-    }else{
-        console.log('hi');
-        fcontainer.push(['','','',1]);
-    }
-    let mContainer = [];
-    let eContainer = [];
-    let sLecture = [''];
-    sLecture = [JSON.parse(sessionStorage.getItem('sLecture'))];
-    console.log(sLecture);
-    sLecture.forEach( e =>{
-        e.type === "Major" ? mContainer.push(e.lectureName): eContainer.push(e.lectureName);
-    })
-    let [majorCourseList,setMajorCourseList] = useState(mContainer);
-    let [electiveCourseList, setElectiveCourseList] = useState(eContainer);
-    let [faculty, setFaculty] = useState(fcontainer);
-    let eNum = 0;
-    let mNum = 0;
-    let cNum = 0;
-    let formData = new FormData();
+    //Image Upload
     const {mutate:uploadImage} = useMutate({
         verb:'POST',
         path:'/api/profileData'
     });
+    //Faculty Courses
+    // let fContainer = [];
+    let fLectureData = JSON.parse(sessionStorage.getItem('identity'));
+    // if(fLectureData.length>0){
+    //     fLectureData.forEach(e =>{
+    //         const oneCourse =[];
+    //         oneCourse.push(e.cname);
+    //         oneCourse.push(e.lectureDescription);
+    //         oneCourse.push(e.lectureLink);
+    //         oneCourse.push(e.id);
+    //         fContainer.push(oneCourse);
+    //     })
+    // }
+
+
+    let [faculty, setFaculty] = useState(fLectureData.Courses === undefined? []: fLectureData.Courses);
+    //Student Lecture
+    let sLecture = [''];
+    sLecture = [JSON.parse(sessionStorage.getItem('sLecture'))];// data from session
+    let [courseList,setCourseList] = useState(sLecture);
+
+
+    let cNum = 0;
+    let fNum = 0;
+    let formData = new FormData();
+
     const handleNewCourse = (e) =>{
         e.preventDefault();
         const newCourseNum = parseInt(e.target.name);
         const newCourseType = parseInt(e.target.attributes.item(2).value);
         const newCourse = faculty[newCourseNum];
-        newCourse[newCourseType] = e.target.value;
+        console.log(e.target.attributes);
+        if(newCourseType === 0){
+            newCourse.cname = e.target.value;
+        }else if( newCourseType === 1){
+            newCourse.type = e.target.value;
+        }else{
+            newCourse.zoomLink = e.target.value;
+        }
+        newCourse.modified = true;
+        newCourse.facultyId = fLectureData.id;
         setFaculty(
             [...faculty.slice(0,newCourseNum),newCourse,...faculty.slice(newCourseNum+1,faculty.length)]
         )
@@ -58,8 +68,8 @@ function Profile(userInfo){
 
     const addCourse = () =>{
         console.log(faculty);
-        const lastNum = faculty[faculty.length-1][3]
-        setFaculty([...faculty,['','','',lastNum+1]])
+        // const lastNum = faculty[faculty.length-1][3]
+        setFaculty([...faculty,{'cname':"",'zoomLink':"",'type':""}])
         console.log(faculty)
     }
     const deleteCourse = () =>{
@@ -68,47 +78,37 @@ function Profile(userInfo){
         list.pop();
         setFaculty(list)
     }
-    const handleElectiveCourse = (e) =>{
-        const index = parseInt(e.target.name)
-        setElectiveCourseList(
-            [...electiveCourseList.slice(0,index),e.target.value,...electiveCourseList.slice(index+1,eNum)]
-        )
+    const handleOccupation = (e) =>{
+        setOccupation(e.target.value);
     }
-    const handleMajorCourse = (e) =>{
+    const handleCourses = (e) =>{
         const index = parseInt(e.target.name)
-        setMajorCourseList(
-            [...majorCourseList.slice(0,index),e.target.value,...majorCourseList.slice(index+1,mNum)]
+        setCourseList(
+            [...courseList.slice(0,index),e.target.value,...courseList.slice(index+1,cNum)]
         )
     }
     const handleMajor = (e) =>{
         setMajor(e.target.value)
     }
-    const handleNickName =(e) =>{
+    const handleNickName = (e) =>{
         setNickName(e.target.value);
     }
+    const handleName =(e) =>{
+        setName(e.target.value);
+    }
+    const handleSubData = (e) =>{
+        setSubData(e.target.value);
+    }
     const addMajorCourse = () =>{
-        setMajorCourseList([...majorCourseList,''])
+        setCourseList([...courseList,''])
     }
     const deleteMajorCourse = () =>{
         const list = [];
-        majorCourseList.forEach( e =>{list.push(e)})
+        courseList.forEach( e =>{list.push(e)})
         list.pop();
-        setMajorCourseList(list)
+        setCourseList(list)
     }
-    const addElectiveCourse = () =>{
-        const list = [];
-        electiveCourseList.forEach( e =>{list.push(e)})
-        setElectiveCourseList([...list,''])
-        console.log(electiveCourseList)
-    }
-    const deleteElectiveCourse = () =>{
-        const list = [];
-        electiveCourseList.forEach( e =>{list.push(e)})
-        list.pop();
-        console.log(list);
-        setElectiveCourseList(list)
-        console.log(electiveCourseList)
-    }
+
     const logout = (res) =>{
         sessionStorage.clear();
         window.location.href="/"
@@ -128,55 +128,38 @@ function Profile(userInfo){
         setPostImage(defaultImage);
         console.log(defaultImage);
     }
-    const handleUpload = () =>{
-        let sessionData;
-        formData.append('userId',userData.id)
-        formData.append('mode',userData.occupation)
+    const handleUpload = async() =>{
+        formData.append('occupation',occupation);
+        formData.append('name',name);
         formData.append('nickName',nickName);
-        formData.append('electiveCourse',JSON.stringify(electiveCourseList));
-        formData.append('majorCourse',JSON.stringify(majorCourseList));
+        formData.append('subData',subData);
         formData.append('major',major);
+        formData.append('userId',userData.id)
         formData.append('image',postImage);
-        uploadImage(formData)
-            .then(r =>{sessionData = r; console.log(sessionData);})
-            .catch( () =>{console.log('Oooops, there is something wrong')})
+        if(occupation ==='Faculty'){
+            formData.append('newCourse',JSON.stringify(faculty))
+        }
+        const sessionData = await uploadImage(formData).catch( r =>{ console.error('error :' + r)})
+
+        sessionStorage.removeItem('userData')
+        sessionStorage.removeItem('identity')
+        console.log(sessionData);
+        sessionStorage.setItem('userData',JSON.stringify(sessionData[0]));
+        sessionStorage.setItem('identity',JSON.stringify(sessionData[1]));
         document.getElementById('profilePageImage').src = selectedImage;
         //Notice user data is saved
         let hi = document.createTextNode("    ...              Saved!!");
         document.getElementById('studentMode').appendChild(hi);
-        //remove notice
-        let removeText = document.getElementById('studentMode').childNodes[0];
-        setTimeout(function(){removeText.remove()},1000);
+        //move
+        let moveTo;
+        setTimeout( moveTo = () =>window.location.href = '/content',1000);
     }
-    const handleFacultyModeUpload = () =>{
-        formData.append('userId',userData.id)
-        formData.append('mode',userData.occupation)
-        formData.append('nickName',nickName);
-        formData.append('major',major);
-        formData.append('image',postImage);
-        formData.append('newCourse',JSON.stringify(faculty))
-        uploadImage(formData)
-            .then(r =>{ console.log(r); sessionStorage.setItem('fLecture',JSON.stringify(r[0])); sessionStorage.setItem('userData',JSON.stringify(r[1])); })
-            .catch( () =>{console.log('Oooops, there is something wrong')})
-        document.getElementById('profilePageImage').src = selectedImage;
-        //Notice user data is saved
-        let hi = document.createTextNode("    ...              Saved!!");
-        document.getElementById('facultyModeSubmit').appendChild(hi);
-        //remove notice
-        let removeText = document.getElementById('facultyModeSubmit').childNodes[0];
-        setTimeout(function(){removeText.remove()},1000);
-    }
+
 
     return(
         <div className="wrapper">
             <Header user={userInfo.user} onSubmit={userInfo.performSearch} />
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
+            <br/><br/><br/><br/><br/><br/><br/>
             <article id='profileArticle'>
                 <h2>Edit Profile</h2>
                 <section>
@@ -190,18 +173,50 @@ function Profile(userInfo){
                         </div>
                     </div>
                 </section>
+                <br/>
                 <section>
                     <div className="box" >
-                        <h3>NicKName</h3>
-                        <input type="text" className='generalInfo' id="profileName" onChange={handleNickName} value={nickName} required/>
+                        <h3>Occupation</h3>
+                        {userData.verified?
+                            <>
+                                <h3>{userData.occupation}</h3>
+                            </>
+                            :
+                            <select name='occupation' onChange={handleOccupation} className='generalInfo' value={occupation} required>
+                                <option value='Student'>Student</option>
+                                <option value='Faculty'>Faculty</option>
+                            </select>
+                        }
+
                     </div>
                     <br/>
                 </section>
                 <section>
                     <div className="box" >
-                        <h3>MAJOR</h3>
-                        <select name='major' onChange={handleMajor} className='generalInfo' value={major}>
-                            <option value=''>Choose Your Major</option>
+                        <h3>{occupation === 'Student'? 'StudentId':'Office'} </h3>
+                        <input type={occupation === 'Student'? 'number':'text'} className='generalInfo' id="profileName" onChange={handleSubData} value={subData} required/>
+                    </div>
+                    <br/>
+                </section>
+                <section>
+                    <div className="box" >
+                        <h3>Name</h3>
+                        <input type="text" className='generalInfo' id="profileName" onChange={handleName} value={name} required="true"/>
+                    </div>
+                    <br/>
+                </section>
+                <section>
+                    <div className="box" >
+                        <h3>NickName</h3>
+                        <input type="text" className='generalInfo' id="profileName" onChange={handleNickName} value={nickName} required="true"/>
+                    </div>
+                    <br/>
+                </section>
+                <section>
+                    <div className="box" >
+                        <h3>Major</h3>
+                        <select name='course' onChange={handleMajor} className='generalInfo' value={major}>
+                            <option value="">Please Choose your Major</option>
                             <option value='CSE'>CSE</option>
                             <option value='MEC'>MEC</option>
                             <option value='AMS'>AMS</option>
@@ -211,17 +226,29 @@ function Profile(userInfo){
                     </div>
                     <br/>
                 </section>
+                <section>
+                    <div className="box" >
+                        <h3>My Courses</h3>
+                    </div>
+                    <br/>
+                </section>
                 {userData.occupation === "Faculty" ?
                     <>
                         <section>
-
                             <div>
                                 {faculty.map(e =>
                                     <>
                                         <h1 id='facultyFont'> Fauculty: Course</h1>
-                                        <input type='text' name={cNum} flag='0' className='facultyCourse' placeholder='Course Name' value={e[0]} onChange={handleNewCourse}/><br/>
-                                        <input type='text' name={cNum} flag='1'className='facultyCourse' placeholder='Course Description' value={e[1]} onChange={handleNewCourse} /><br/>
-                                        <input type='text' name={cNum++} flag='2' className='facultyCourse' placeholder='Course Link'value={e[2]} onChange={handleNewCourse}/>
+                                        <input type='text' name={fNum} flag='0' className='facultyCourse' placeholder='Course Name' value={e.cname} onChange={handleNewCourse}/><br/>
+                                        <select type='course' name={fNum} flag='1' onChange={handleNewCourse} className='facultyCourse' value={e.type} >
+                                            <option value="">Please Choose Lecture Type</option>
+                                            <option value='CSE'>CSE</option>
+                                            <option value='MEC'>MEC</option>
+                                            <option value='AMS'>AMS</option>
+                                            <option value='TSM'>TSM</option>
+                                            <option value='FIT'>FIT</option>
+                                        </select><br/>
+                                        <input type='text' name={fNum++} flag='2' className='facultyCourse' placeholder='Course Link'value={e.zoomLink} onChange={handleNewCourse}/>
                                     </>
                                 )}
                                 <div id="plus">
@@ -232,81 +259,19 @@ function Profile(userInfo){
                             <br/>
                         </section>
                         <br/>
-                        <div id="btn">
-                            <input type="submit" id="submitbtn" onClick={handleFacultyModeUpload} value="Save"/>
-                            <p id='facultyModeSubmit'></p>
-                            <br/>
-                            <br/>
-                            <div>
-                                <GoogleLogout
-                                    clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
-                                    buttonText="Logout"
-                                    className="logout"
-                                    onLogoutSuccess={logout}
-                                >
-                                </GoogleLogout>
-                            </div>
-                        </div>
                     </>
                     :
                     <>
-                        <section>
-                            <div className="box">
-                                <h3>MAJOR COURSE</h3>
-                                {majorCourseList.map(e =>
-                                    < input
-                                        type="text"
-                                        name={mNum++}
-                                        className="longtext"
-                                        id="majorCourse1"
-                                        onChange={handleMajorCourse}
-                                        value={e}
-                                    />
-                                )}
-                                <div id="plus">
-                                    <button className="material-icons" onClick={addMajorCourse}>add</button>
-                                    <button className="material-icons" onClick={deleteMajorCourse}>delete</button>
-                                </div>
-                            </div>
-                            <br/>
-                            <div className="box">
-                                <h3>ELECTIVE COURSE</h3>
-                                {electiveCourseList.map(e =>
-                                    <input
-                                        type="text"
-                                        className="longtext"
-                                        name={eNum++}
-                                        id="electiveCourse1"
-                                        onChange={handleElectiveCourse}
-                                        value={e}
-                                    />
-                                )}
-                                <div id="plus">
-                                    <button className="material-icons" onClick={addElectiveCourse}>add</button>
-                                    <button className="material-icons" onClick={deleteElectiveCourse}>delete</button>
-                                </div>
-                            </div>
-                            <br/>
-                        </section>
-
-                        <br/>
-                        <div id="btn">
-                            <input type="submit" id="submitbtn" onClick={handleUpload} value="Save"/>
-                            <p id='studentMode'></p>
-                            <br/>
-                            <br/>
-                            <div>
-                                <GoogleLogout
-                                    clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
-                                    buttonText="Logout"
-                                    className="logout"
-                                    onLogoutSuccess={logout}
-                                >
-                                </GoogleLogout>
-                            </div>
-                        </div>
                     </>
                 }
+                <input type="submit" id="submitbtn" onClick={handleUpload} value="Save"/>
+                <p id='studentMode'></p>
+                <GoogleLogout
+                    clientId="547391741830-p8ru0i3urt5bhnt5nqief36ns3n20gqv.apps.googleusercontent.com"
+                    buttonText="Logout"
+                    className="logout"
+                    onLogoutSuccess={logout}
+                />
             </article>
         </div>
     )

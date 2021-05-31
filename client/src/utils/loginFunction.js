@@ -16,29 +16,47 @@ export const loginStatus = () =>{
 export const responseFailGoogle = (r) =>{
     loginStatus("Login Failed");
 }
-export const responseGoogle = (response) => {
+const slec = [{
+    lectureCategory: "",
+    lectureDescription: "",
+    lectureLink: "",
+    lectureName: "",
+    professor: "",
+    type: "",
+}]
+const flec = [{
+    lectureCategory: "",
+    lectureDescription: "",
+    lectureLink: "",
+    lectureName: "",
+    professor: ""
+}]
+
+export const responseGoogle = async (response) => {
     document.getElementById('googleLogin').style= 'display:none'
     document.getElementById('googleHide').style ='display:block'
-    userInfoAPIMethod(response.profileObj).then(r => {
-        console.log(r)
-        const slec = [{
-            lectureCategory: "",
-            lectureDescription: "",
-            lectureLink: "",
-            lectureName: "",
-            professor: "",
-            type: "",
-        }]
-        const flec = [{
-            lectureCategory: "",
-            lectureDescription: "",
-            lectureLink: "",
-            lectureName: "",
-            professor: ""
-        }]
-        console.log(r[1] === "")
-        sessionStorage.setItem('userData', JSON.stringify(r[0]))
-        sessionStorage.setItem('fLecture',JSON.stringify(r[1] === "" ? flec : r[1]))
-        sessionStorage.setItem('sLecture',JSON.stringify(r[2] === ""? slec: r[2]))
-    })
+    console.log(response.profileObj);
+    const userData = await userInfoAPIMethod(response.profileObj);
+    console.log(userData);
+    sessionStorage.setItem('userData', JSON.stringify(userData[0]))
+    if(userData[1]){
+        sessionStorage.setItem('identity',JSON.stringify(userData[1]))
+    }else{
+        sessionStorage.setItem('identity',JSON.stringify({studentId:null, office:null}))
+    }
+    if(userData[0].verified){
+        sessionStorage.setItem('fLecture',JSON.stringify([]))
+        sessionStorage.setItem('sLecture',JSON.stringify(slec))
+        window.location.href = '/content'
+    }else{
+        sessionStorage.setItem('fLecture',JSON.stringify([]))
+        sessionStorage.setItem('sLecture',JSON.stringify(slec))
+        window.location.href = '/profile'
+    }
+    //     console.log(r)
+
+    //     // console.log(r[1] === "")
+    //     console.log(r);
+
+    // })
 }

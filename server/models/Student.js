@@ -1,17 +1,21 @@
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize,DataTypes) => {
-    const Takes = sequelize.define('Takes',{
-            semester: {
-                type: Sequelize.STRING(45),
+    const Student = sequelize.define('Student',{
+            studentId:{
+                type: Sequelize.INTEGER,
                 allowNull: false,
-                unique: false
+                unique:true,
             },
+
         }, {
             sequelize,
+            timestamps: true,
             underscored: false,
+            paranoid: true,
             charset: 'utf8',
             collate: 'utf8_general_ci',
         });
-    return Takes;
+
+    return Student;
 }

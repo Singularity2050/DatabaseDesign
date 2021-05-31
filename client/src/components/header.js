@@ -27,9 +27,7 @@ let Logo = createClass({
     render: function() {
         return (
             <a href='/content'>
-                <div id="logo" className="Logo">
-                    <img src={logo} alt=""/>
-                </div>
+                    <img src={logo} alt="" id="logo"/>
             </a>
         );
     }

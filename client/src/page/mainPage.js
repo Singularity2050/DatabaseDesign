@@ -3,7 +3,7 @@ import '../css/Home.css';
 import {GoogleLogin, GoogleLogout }from 'react-google-login';
 import logo from '../image/stonyflix_logo.png'
 import {loginStatus, logout, responseFailGoogle, responseGoogle} from "../utils/loginFunction";
-function Main(props) {
+function Main() {
     const [tab1Show, setTab1Show] = useState('tab-content-item show');
     const [tab2Show, setTab2Show] = useState('tab-content-item');
     const [tab3Show, setTab3Show] = useState('tab-content-item');

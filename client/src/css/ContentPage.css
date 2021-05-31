@@ -219,7 +219,7 @@ p {
     padding: 20px 40px;
     box-sizing: border-box;
     transition: opacity 3s ease;
-    opacity: 0;
+
 }
 .TitleList .titles-wrapper {
     display: flex;
@@ -314,7 +314,7 @@ p {
     border: 2px solid rgba(255, 255, 255, .2);
     width: 32px;
     height: 32px;
-    font-size: 16px;
+    font-size: 20px;
     border-radius: 32px;
     overflow: hidden;
     position: absolute;
@@ -356,4 +356,6 @@ p {
 #RedText{
     color:red;
 }
- 
+#logo{
+    width:150px;
+}
