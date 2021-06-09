@@ -1,4 +1,4 @@
-import {userInfoAPIMethod} from "../api/client";
+import {findMyInfoAPIMethod, userInfoAPIMethod} from "../api/client";
 
 export const logout = (res) =>{
     document.getElementById('googleLogin').style= 'display:block'
@@ -32,6 +32,9 @@ const flec = [{
     professor: ""
 }]
 
+export const getUserData = async() =>{
+
+}
 export const responseGoogle = async (response) => {
     document.getElementById('googleLogin').style= 'display:none'
     document.getElementById('googleHide').style ='display:block'
@@ -39,18 +42,19 @@ export const responseGoogle = async (response) => {
     const userData = await userInfoAPIMethod(response.profileObj);
     console.log(userData);
     sessionStorage.setItem('userData', JSON.stringify(userData[0]))
+
     if(userData[1]){
-        sessionStorage.setItem('identity',JSON.stringify(userData[1]))
+        let identity = await findMyInfoAPIMethod(userData[0].occupation,userData[0].id)
+        sessionStorage.setItem('identity',JSON.stringify(identity))
+        sessionStorage.setItem('courseDetail',JSON.stringify(userData[1]))
     }else{
-        sessionStorage.setItem('identity',JSON.stringify({studentId:null, office:null}))
+        const myInfo = {studentId:null, office:null};
+        const firstData = {myInfo}
+        sessionStorage.setItem('identity',JSON.stringify({myInfo}));
     }
     if(userData[0].verified){
-        sessionStorage.setItem('fLecture',JSON.stringify([]))
-        sessionStorage.setItem('sLecture',JSON.stringify(slec))
         window.location.href = '/content'
     }else{
-        sessionStorage.setItem('fLecture',JSON.stringify([]))
-        sessionStorage.setItem('sLecture',JSON.stringify(slec))
         window.location.href = '/profile'
     }
     //     console.log(r)

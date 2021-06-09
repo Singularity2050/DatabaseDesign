@@ -17,30 +17,34 @@ export default class ContentList extends React.Component{
         super(props);
         console.log(props);
         this.state ={'courses':[]}
-        this.courseData = this.courseData.bind(this);
-        this.courseData(this.props.major).then(r => {
-            console.log(r);
-            this.setState({'courses':r})
-        });
     }
 
-    courseData = (major) => getCourseAPIMethod(major);
     render() {
+        const isEmpty = this.state.courses.length <= 0;
+        if(this.state.courses.length<= 0){
+                getCourseAPIMethod(this.props.major).then( r =>{
+                    this.setState({'courses':r})
+                });
+        }
         // const courses = this.state;
         // const obj = JSON.parse(courses);
         let index = 0;
         const userData = JSON.parse(sessionStorage.getItem('userData'));
         const identity = JSON.parse(sessionStorage.getItem('identity'));
-
+        console.log(isEmpty);
         return(
             <>
                 <div  className="TitleList">
                     <div className="Title">
                         <h1>{this.props.major} Course</h1>
                         <div className="titles-wrapper">
-                            {this.state.courses.map( e =>{
-                                return ( <Item imageLink={this.props.imageFile[index++]} lecture={e} identity={identity} userData={userData}/>);
-                            })}
+                            {isEmpty ? <></> :
+                                    this.state.courses.map(e => {
+                                        console.log(e);
+                                        return (<Item imageLink={this.props.imageFile[index++]} lecture={e}
+                                                      identity={identity} userData={userData}/>);
+                                    })
+                            }
                         </div>
                     </div>
                 </div>

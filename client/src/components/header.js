@@ -10,7 +10,7 @@ let createClass = require('create-react-class');
 export let Header = createClass({
     render: function() {
         const userData = JSON.parse(sessionStorage.getItem('userData'))
-        console.log(userData.image);
+        console.log(userData);
         return (
             <header className="Header">
                 <Logo />

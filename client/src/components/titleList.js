@@ -7,7 +7,13 @@
 import React from "react";
 import imageData from '../utils/image.json'
 import {useMutate} from "restful-react";
-import {addMyCourseAPI, deleteMyCourseAPI} from "../api/client";
+import {
+    addMyCourseAPI,
+    courseDetailInfoAPIMethod,
+    deleteMyCourseAPI,
+    findMyInfoAPIMethod,
+    userInfoAPIMethod
+} from "../api/client";
 
 var createClass = require('create-react-class');
 var i = -1;
@@ -15,15 +21,23 @@ var i = -1;
 export var TitleList = createClass({
 
     apiKey: '87dfa1c669eea853da609d4968d294be',
+
     getInitialState: function() {
         return {data: imageData.cse, mounted: false, lectureData:[]};
     },
+
     loadContent: function() {
         const user = JSON.parse(sessionStorage.getItem('userData'));
-        const courses = JSON.parse(sessionStorage.getItem('identity'));
-        console.log(courses);
-        this.setState({lectureData: courses.Courses === undefined? []: courses.Courses})
-      console.log(typeof this.state.lectureData);
+
+        findMyInfoAPIMethod(user.occupation,user.id).then( r =>{
+
+            let courses = JSON.parse(sessionStorage.getItem('courseDetail'))
+            sessionStorage.removeItem('identity');
+            sessionStorage.setItem('identity',JSON.stringify(r));
+            console.log(courses);
+            this.setState({lectureData: courses === null? []: courses.Courses})
+            console.log(this.state.lectureData);
+        })
     },
     componentDidMount: function() {
         this.loadContent();
@@ -34,7 +48,7 @@ export var TitleList = createClass({
     },
     render: function() {
         let index = 0;
-        console.log( this.props);
+        console.log(this.state.lectureData);
         return (
             <div ref="titlecategory" className="TitleList" data-loaded={this.state.mounted}>
                 <div className="Title">
@@ -55,52 +69,57 @@ export function Item(e){
         let dynamicData;
         let courseData;
         let isTaking = false;
-        console.log(e.lecture.id);
-        console.log(isTaking);
+        let isLecture = false;
+        console.log(e);
+        if(e.lecture !== undefined){
+            isLecture = true;
+        }
         if(window.location.pathname === '/content'){
             if(e.userData.occupation === 'Faculty'){
                 dynamicData = undefined;
             }else{
                 dynamicData = e.lecture.Takes.StudentId;
             }
-            // dynamicData = e.lecture.Takes.StudentId;
         }else{
-
-            if(e.identity.Courses !== undefined){
-                for( let i = 0 ; i < e.identity.Courses.length; i ++){
-                    if(e.identity.Courses[i].id === e.lecture.id){
-                        isTaking = true;
-                        break;
-                    }else{
-                        isTaking = false;
+            console.log(e);
+            if(e.userData.occupation === 'Faculty'){
+                dynamicData = undefined;
+            }else{
+                dynamicData = e.identity.myInfo.id;
+                console.log(e);
+                if(e.identity.myCourseInfo !== undefined){
+                    for( let i = 0 ; i < e.identity.myCourseInfo.length; i ++){
+                        if(e.identity.myCourseInfo[i].id === e.lecture.id){
+                            isTaking = true;
+                            break;
+                        }else{
+                            isTaking = false;
+                        }
                     }
                 }
             }
-
-            if(e.userData.occupation === 'Faculty'){
-
-            }else{
-                courseData = e.lecture.Faculties[0]
-                dynamicData = e.identity.id;
-            }
         }
+        console.log(dynamicData);
         return (
+            <>
+            {isLecture ?
             <div className="Item"  style={{backgroundImage: 'url(' + e.imageLink + ')'}} >
-                    <a href={window.location.pathname === '/content'? e.lecture.zoomLink: '#' } rel="noopener noreferrer">
+                    <a href={window.location.pathname === '/content'? e.lecture.zoomLink: '/' } target="_blank" rel="noopener noreferrer">
                     <div className="overlay">
-                        <div className="title">{e.lecture.cname}</div>
-                        {/*<div className="rating">{this.props.score} / 10</div>*/}
-                        {/*<div className="plot">{e.lecture.Faculties[0].office}</div>*/}
-                        {/*<div className="plot">{e.lecture.Faculties[0].Teaches.semester}</div>*/}
-                        <div className="plot">{e.lecture.status? "Available":"Disable"}</div>
+                            <div className="title">{e.lecture.cname}</div>
+                            <div className="plot">Faculty : {e.lecture.Faculties[0].User.name}</div>
+                            <div className="plot">Office : {e.lecture.Faculties[0].office}</div>
+                            <div className="plot">Semester : {e.lecture.Faculties[0].Teaches.semester}</div>
+                            <div className="plot">Zoom Available: {e.lecture.status? "Available":"Disable"}</div>
                         {dynamicData === undefined || window.location.pathname === '/content'?
                             <></> :
                             <ListToggle courseId={e.lecture.id} facultyId={e.lecture.Faculties[0].id} studentId={dynamicData} isToggle={isTaking}/>
                         }
-
                     </div>
                 </a>
             </div>
+                    : <></>}
+            </>
         );
 };
 
@@ -114,6 +133,7 @@ var ListToggle = createClass({
         if(this.state.toggled === true) {
             this.setState({ toggled: false });
             deleteMyCourseAPI(this.props.courseId,this.props.studentId).then(r => console.log(r));
+
         } else {
             addMyCourseAPI(this.props.courseId,this.props.studentId).then(r => console.log(r));
             this.setState({ toggled: true });

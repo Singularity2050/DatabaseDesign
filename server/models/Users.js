@@ -33,7 +33,7 @@ module.exports = (sequelize,DataTypes) => {
         },
         occupation:{
             type: Sequelize.STRING(300),
-            allowNull: true,
+            allowNull: false,
             defaultValue: "Student",
         },
         verified:{

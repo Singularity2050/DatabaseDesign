@@ -4,6 +4,15 @@ const defaultHeaders = {
         'Content-Type': 'application/json; charset=UTF-8'
     },
 }
+
+export const courseDetailInfoAPIMethod = (occupation,uid,success) =>{
+    return fetch(`/api/courseDetail/${occupation}/${uid}`,{
+        ...defaultHeaders,
+    }).then(checkStatus)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(success);
+}
 export const userInfoAPIMethod = (userInfo,success) =>{
     return fetch('/api/auth/google',{
         ...defaultHeaders,
@@ -13,6 +22,14 @@ export const userInfoAPIMethod = (userInfo,success) =>{
         .then(checkStatus)
         .then(parseJSON)
         .then(success);
+}
+export const findMyInfoAPIMethod = (occupation,uid,success)=>{
+    return fetch(`/api/findMyData/${occupation}/${uid}`,{
+        ...defaultHeaders,
+    }).then(checkStatus)
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(success);
 }
 export const studentInfoAPIMethod = (id,success) =>{
     return fetch(`/api/auth/studentInfo?`+{id},{
@@ -31,7 +48,7 @@ export const facultyInfoAPIMethod = (id,success) =>{
         .then(success);
 }
 export const getCourseAPIMethod = (major,success) =>{
-    return fetch(`/api/course/`+major,{
+    return fetch(`/api/course/${major}`,{
         ...defaultHeaders,
     }).then(checkStatus)
         .then(checkStatus)
@@ -86,8 +103,6 @@ function checkStatus(response) {
     if (response.status >= 200 && response.status < 300) {
         return response;
     } else {
-
-
         const error = new Error(`HTTP Error: ${response.statusText}`);
         error.status = response.statusText;
         error.response = response;

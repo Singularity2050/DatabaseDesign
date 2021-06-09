@@ -7,7 +7,7 @@ import Profile from './page/profile';
 import Courses from './page/courses';
 import './css/ContentPage.css'
 
-const NoMatch = ({location}) => (<div><strong>Error!</strong> No route found matching:<div><code>{location.pathname}</code></div></div>);
+const NoMatch = ({location}) => (<div style={{textAlign:"center"}}> <h1>Error!</h1> You are trying to invalid access!<div><code><br/>{location.pathname}<br/><br/> Please go Back to <a href="/content" style={{color:"red"}}>MainPage</a></code></div></div>);
 
 
 /////////////////

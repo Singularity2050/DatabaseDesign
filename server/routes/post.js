@@ -1,20 +1,68 @@
 
-const {singleUploadCtrl, updateFaculty, updateStudent, wrapAsync} = require("./middlewares");
+const DatauriParser = require('datauri/parser');
+const multer = require('multer');
 const express = require('express');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 const Sequelize = require('sequelize');
 const path = require('path');
 const { Users,Courses, Teaches} = require('../models');
 const fs = require('fs');
-const {deleteMyLecture} = require("./middlewares");
-const {createMyLecture} = require("./middlewares");
-const {createOrUpdateCourses} = require("./middlewares");
-const {findFacultyInfo} = require("./middlewares");
-const {findCourses} = require("./middlewares");
+const {
+    findAssignments,
+    deleteMyLecture,
+    createMyLecture,
+    createOrUpdateCourses,
+    findCourses,
+    findUserInfo,
+    findStudentInfo,
+    findFacultyInfo,
+    updateFaculty,
+    updateStudent,
+    wrapAsync       } = require("./middlewares");
+
 const {createCourses} = require("./middlewares");
 const {findCourse} = require("./middlewares");
-const {findUserInfo} = require("./middlewares");
+
 const router = express.Router();
+const cloudinary = require('cloudinary').v2;
+
+//IMAGE
+const parser = new DatauriParser();
+const ALLOWED_FORMATS = ['image/jpeg','image/png','image/jpg'];
+const formatBufferTo64 = file =>
+    parser.format(path.extname(file.originalname).toString(),file.buffer)
+
+const storage= multer.memoryStorage();
+const upload = multer({
+    storage,
+    fileFilter: function(req,file,cb){
+        if(ALLOWED_FORMATS.includes(file.mimetype)){
+            cb(null,true);
+        }else{
+            cb(new Error('Not supported file type!'),false);
+        }
+    }
+})
+const singleUpload = upload.single('image');
+
+const singleUploadCtrl = (req,res,next) =>{
+    singleUpload(req,res,(error)=>{
+        if(error){
+            return res.status(422).send({message:"Image upload fail!"});
+        }
+        next();
+    })
+}
+
+cloudinary.config({
+    cloud_name: 'dmjiv91uu',
+    api_key: '275859854347512',
+    api_secret: 'igFTtALlFAs8oXOdB5fIb_60PSc'
+});
+const cloudinaryUpload = file => cloudinary.uploader.upload(file);
+
+
+//IMAGE
 
 // const { User,Post,COMMENT,Love,Noti}  = require('../models');
 const { request } = require('http');
@@ -22,7 +70,35 @@ const Op = Sequelize.Op;
 
 
 const {createFaculty, updateUserInfo,createStudent} = require("./middlewares");
-
+router.get('/findMyData/:occupation/:uid',wrapAsync(async function(req,res,next){
+    let container;
+    let myInfo ="";
+    let myCourse ="";
+    let myCourseInfo ="";
+    console.log(req.params.occupation);
+    if(req.params.occupation === "Student"){
+        myInfo = await findStudentInfo(req.params.uid)
+        console.log('qwe22');
+        console.log(myInfo.dataValues.Courses);
+        myCourse = myInfo.dataValues.Courses;
+        myCourseInfo = await findAssignments (myCourse);
+        console.log(myCourseInfo);
+    }else if(req.params.occupation === "Faculty"){
+        myInfo = await findFacultyInfo(req.params.uid);
+        console.log('qwe22');
+        myCourse = myInfo.dataValues.Courses;
+        myCourseInfo = await findAssignments (myCourse);
+        console.log(myCourseInfo);
+    }
+    myInfo.CourseInfo = myCourseInfo;
+    console.log('start2"');
+    container = {
+        myInfo,
+        myCourseInfo
+    }
+    console.log(myInfo.CourseInfo);
+    res.json(container);
+}))
 router.get('/addMyCourse/:courseId/:studentId',wrapAsync(async function (req,res,next){
     console.log('test');
     const myLec =await createMyLecture(req.params);
@@ -34,7 +110,7 @@ router.get('/deleteMyCourse/:courseId/:studentId',wrapAsync(async function (req,
     console.log(myLec);
 }));
 //getCourse
-router.get('/course/:major',singleUploadCtrl,wrapAsync(async function(req,res,next){
+router.get('/course/:major',wrapAsync(async function(req,res,next){
     let courses = await findCourses(req.params);
     console.log(courses);
     res.json(courses);
@@ -47,11 +123,13 @@ router.post('/profileData',singleUploadCtrl,wrapAsync(async function(req,res,nex
 
     // console.log()
     //
+
     let objectCourse;
     let identity; //Student or Faculty?
     let courses;
     let userData = [];// User Basic data
     //get userdata from database, if no, it will return null
+    console.log(req.body);
     const rawUserData = await findUserInfo(req);
     const user = rawUserData.dataValues;
     if(typeof req.body.newCourse === 'string'){
@@ -73,18 +151,14 @@ router.post('/profileData',singleUploadCtrl,wrapAsync(async function(req,res,nex
             identity = await updateStudent(req)
         }else{
             console.log(2);
+            const faculty = await updateFaculty(req)
+            identity = await findFacultyInfo(req.body.userId);
             if(objectCourse.length != 0){
                 console.log(5);
+                console.log('check')
+                objectCourse.facultyId = identity.dataValues.id
                 let createdCourse = await createOrUpdateCourses(objectCourse);
-                console.log('-----------------------');
-                console.log(createdCourse)
-                console.log('-----------------------');
             }
-            await updateFaculty(req)
-            identity = await findFacultyInfo(req.body.userId);
-            console.log('-----------------------');
-            // console.log(identity.Courses);
-            console.log('-----------------------');
         }
     }else{
         if(req.body.occupation === 'Student'){
@@ -95,70 +169,34 @@ router.post('/profileData',singleUploadCtrl,wrapAsync(async function(req,res,nex
             identity =await createFaculty(req)
         }
     }
+    if(req.body.image === undefined){
+        const file64 = formatBufferTo64(req.file);
+        const uploadResult = await cloudinaryUpload(file64.content);
+        req.body.user.image = uploadResult.secure_url;
+    }else{
+        req.body.user.image = req.body.image;
+    }
     //update user Info
     const updateUser = await updateUserInfo(req);
 
     //Merge identity and User Info
     userData.push(updateUser);
     userData.push(identity);
-    // console.log('---------------------------------');
-    // console.log(identity);
-    // console.log('---------------------------------');
+
     //send to front-end server
     res.json(userData);
-    // let finalData =[];
-    // //faculty
-    // let container =[];
-    // //Student
-    // let lectureContainer = [];
-    // if( req.body.mode == "Faculty") {
-    //     await Lecture.destroy({where:{UserId:req.body.userId}})
-    //     const newCourseData = JSON.parse(req.body.newCourse);
-    //
-    //     for (const e of newCourseData) {
-    //          const lecture =await Lecture.create({
-    //             UserId: parseInt(req.body.userId),
-    //             professor: req.body.nickName,
-    //             lectureCategory: req.body.major,
-    //             lectureName: e[0],
-    //             lectureDescription: e[1],
-    //             lectureLink: e[2],
-    //         });
-    //         container.push(lecture);}
-    //     //if Student
-    // }else{
-    //     //delete all
-    //     await rUserLecture.destroy({where:{UserId: req.body.userId}});
-    //
-    //     const majorCourseList = JSON.parse(req.body.majorCourse);
-    //     const electiveCourseList = JSON.parse(req.body.electiveCourse);
-    //
-    //     //make new connection
-    //     for(let i = 0; i < majorCourseList.length; i++){
-    //         const lecture = await Lecture.findOne({where:{lectureName:majorCourseList[i]}});
-    //         console.log(lecture.dataValues.id)
-    //         await rUserLecture.create({ lectureType: "Major", UserId: parseInt(req.body.userId), LectureId: parseInt(lecture.dataValues.id)});
-    //     }
-    //     for(let i = 0; i < electiveCourseList.length; i++){
-    //         const lecture = await Lecture.findOne({where:{lectureName:electiveCourseList[i]}});
-    //         await rUserLecture.create({ lectureType: "Elective",UserId: parseInt(req.body.userId), LectureId : parseInt(lecture.dataValues.id)});
-    //     }
-    //     lectureContainer.push(majorCourseList);
-    //     lectureContainer.push(electiveCourseList);
-    // }
-    // // console.log(container);
 
-    // finalData.push(container);
-    // finalData.push(user);
-    // finalData.push(lectureContainer);
-    // return res.json(finalData);
+}));
+router.get('/courseDetail/:occupation/:id',wrapAsync(async function(req,res,next){
+    let identity;
+    if(req.params.occupation === "Student"){
+        console.log(1);
+        identity =await findStudentInfo(req.params.id)
+    }else{
+        identity = await findFacultyInfo(req.params.id)
+        console.log(identity);
+    }
+    res.json(identity);
 }));
 
-// router.get('/',async(req,res)=>{
-//
-// })
-
-// router.post('/', async (req, res, next) => {
-//
-// })
 module.exports = router;

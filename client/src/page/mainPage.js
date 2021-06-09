@@ -3,6 +3,7 @@ import '../css/Home.css';
 import {GoogleLogin, GoogleLogout }from 'react-google-login';
 import logo from '../image/stonyflix_logo.png'
 import {loginStatus, logout, responseFailGoogle, responseGoogle} from "../utils/loginFunction";
+import {findMyInfoAPIMethod, studentInfoAPIMethod} from "../api/client";
 function Main() {
     const [tab1Show, setTab1Show] = useState('tab-content-item show');
     const [tab2Show, setTab2Show] = useState('tab-content-item');
@@ -10,11 +11,11 @@ function Main() {
     const [tab1Border, setTab1Border] = useState('tab-item tab-border');
     const [tab2Border, setTab2Border] = useState('tab-item');
     const [tab3Border, setTab3Border] = useState('tab-item');
+//TODO:'if user is student, get student's data, if user is faculty, get faculty's data.
 
 // Select tab content item
     const selectItem = (e) => {
         // Grab content item from DOM
-
         const tapContentItemName = String(e.target.id).concat('-content show');
         if (e.currentTarget.id === 'tab-1') {
             tab1(tapContentItemName)

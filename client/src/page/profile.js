@@ -4,6 +4,8 @@ import defaultImage from '../image/default.png'
 import '../css/Profile.css';
 import {GoogleLogout} from "react-google-login";
 import Header from "../components/header";
+import {findMyInfoAPIMethod} from "../api/client";
+
 
 function Profile(userInfo){
     const userData = JSON.parse(sessionStorage.getItem('userData'));
@@ -11,36 +13,21 @@ function Profile(userInfo){
     let [name, setName] = useState(userData.name);
     let [nickName, setNickName] = useState(userData.nickName);
     let [occupation,setOccupation] = useState(userData.occupation);
-    let [subData,setSubData] = useState(userData.occupation === 'Student'? identity.studentId: identity.office);
+    let [subData,setSubData] = useState(userData.occupation === 'Student'? identity.myInfo.studentId: identity.myInfo.office);
     let [major,setMajor] = useState(userData.major);
     let [selectedImage, setSelectedFile] = useState(userData.image);
     let [postImage, setPostImage] = useState(userData.image)
+    let [faculty, setFaculty] = useState(JSON.parse(sessionStorage.getItem('identity')).myCourseInfo);
+    let [assignment, setAssignment] = useState();
+
     //Image Upload
     const {mutate:uploadImage} = useMutate({
         verb:'POST',
         path:'/api/profileData'
     });
-    //Faculty Courses
-    // let fContainer = [];
-    let fLectureData = JSON.parse(sessionStorage.getItem('identity'));
-    // if(fLectureData.length>0){
-    //     fLectureData.forEach(e =>{
-    //         const oneCourse =[];
-    //         oneCourse.push(e.cname);
-    //         oneCourse.push(e.lectureDescription);
-    //         oneCourse.push(e.lectureLink);
-    //         oneCourse.push(e.id);
-    //         fContainer.push(oneCourse);
-    //     })
-    // }
 
-
-    let [faculty, setFaculty] = useState(fLectureData.Courses === undefined? []: fLectureData.Courses);
     //Student Lecture
-    let sLecture = [''];
-    sLecture = [JSON.parse(sessionStorage.getItem('sLecture'))];// data from session
-    let [courseList,setCourseList] = useState(sLecture);
-
+    let [courseList,setCourseList] = useState();
 
     let cNum = 0;
     let fNum = 0;
@@ -51,26 +38,28 @@ function Profile(userInfo){
         const newCourseNum = parseInt(e.target.name);
         const newCourseType = parseInt(e.target.attributes.item(2).value);
         const newCourse = faculty[newCourseNum];
-        console.log(e.target.attributes);
+        console.log(newCourse);
         if(newCourseType === 0){
             newCourse.cname = e.target.value;
         }else if( newCourseType === 1){
             newCourse.type = e.target.value;
-        }else{
+        }else if( newCourseType === 2){
             newCourse.zoomLink = e.target.value;
+        }else{
+            newCourse.Assignments[0].aname = e.target.value;
         }
         newCourse.modified = true;
-        newCourse.facultyId = fLectureData.id;
+        newCourse.facultyId = identity.id;
         setFaculty(
             [...faculty.slice(0,newCourseNum),newCourse,...faculty.slice(newCourseNum+1,faculty.length)]
         )
     }
 
     const addCourse = () =>{
-        console.log(faculty);
         // const lastNum = faculty[faculty.length-1][3]
-        setFaculty([...faculty,{'cname':"",'zoomLink':"",'type':""}])
-        console.log(faculty)
+        const assignment = [];
+        assignment.push({aname:""});
+        setFaculty([...faculty,{'cname':"",'zoomLink':"",'type':"","Assignments":assignment}])
     }
     const deleteCourse = () =>{
         const list = [];
@@ -99,16 +88,6 @@ function Profile(userInfo){
     const handleSubData = (e) =>{
         setSubData(e.target.value);
     }
-    const addMajorCourse = () =>{
-        setCourseList([...courseList,''])
-    }
-    const deleteMajorCourse = () =>{
-        const list = [];
-        courseList.forEach( e =>{list.push(e)})
-        list.pop();
-        setCourseList(list)
-    }
-
     const logout = (res) =>{
         sessionStorage.clear();
         window.location.href="/"
@@ -129,33 +108,40 @@ function Profile(userInfo){
         console.log(defaultImage);
     }
     const handleUpload = async() =>{
-        formData.append('occupation',occupation);
-        formData.append('name',name);
-        formData.append('nickName',nickName);
-        formData.append('subData',subData);
-        formData.append('major',major);
-        formData.append('userId',userData.id)
-        formData.append('image',postImage);
-        if(occupation ==='Faculty'){
-            formData.append('newCourse',JSON.stringify(faculty))
+        console.log(subData)
+        console.log(name);
+        if( subData ==null|| subData==null||nickName==null||name==null||major== null || name==""|| nickName==""|| subData==""){
+            let hi = document.createTextNode("    ...              Please Filled Out Profile!!");
+            document.getElementById('studentMode').appendChild(hi);
+        }else{
+            formData.append('occupation',occupation);
+            formData.append('name',name);
+            formData.append('nickName',nickName);
+            formData.append('subData',subData);
+            formData.append('major',major);
+            formData.append('userId',userData.id)
+            formData.append('image',postImage);
+            if(occupation ==='Faculty'){
+                formData.append('newCourse',JSON.stringify(faculty))
+            }
+            const sessionData = await uploadImage(formData).catch( r =>{ console.error('error :' + r)})
+            console.log(sessionData);
+            // sessionStorage.removeItem('identity')
+            console.log(sessionData);
+            sessionStorage.setItem('userData',JSON.stringify(sessionData[0]));
+            // sessionStorage.setItem('identity',JSON.stringify(sessionData[1]));
+            document.getElementById('profilePageImage').src = selectedImage;
+            //Notice user data is saved
+            let hi = document.createTextNode("    ...              Saved!!");
+            document.getElementById('studentMode').appendChild(hi);
+            //move
+            let moveTo;
+            setTimeout( moveTo = () =>window.location.href = '/content',1000);
         }
-        const sessionData = await uploadImage(formData).catch( r =>{ console.error('error :' + r)})
-
-        sessionStorage.removeItem('userData')
-        sessionStorage.removeItem('identity')
-        console.log(sessionData);
-        sessionStorage.setItem('userData',JSON.stringify(sessionData[0]));
-        sessionStorage.setItem('identity',JSON.stringify(sessionData[1]));
-        document.getElementById('profilePageImage').src = selectedImage;
-        //Notice user data is saved
-        let hi = document.createTextNode("    ...              Saved!!");
-        document.getElementById('studentMode').appendChild(hi);
-        //move
-        let moveTo;
-        setTimeout( moveTo = () =>window.location.href = '/content',1000);
     }
-
-
+    const emptyAname = {"aname":"das"}
+    const cap = {emptyAname}
+    console.log(faculty);
     return(
         <div className="wrapper">
             <Header user={userInfo.user} onSubmit={userInfo.performSearch} />
@@ -194,7 +180,7 @@ function Profile(userInfo){
                 <section>
                     <div className="box" >
                         <h3>{occupation === 'Student'? 'StudentId':'Office'} </h3>
-                        <input type={occupation === 'Student'? 'number':'text'} className='generalInfo' id="profileName" onChange={handleSubData} value={subData} required/>
+                        <input type={occupation === 'Student'? 'number':'text'} className='generalInfo' id="profileName" onChange={handleSubData} value={ subData} required/>
                     </div>
                     <br/>
                 </section>
@@ -226,18 +212,14 @@ function Profile(userInfo){
                     </div>
                     <br/>
                 </section>
-                <section>
-                    <div className="box" >
-                        <h3>My Courses</h3>
-                    </div>
-                    <br/>
-                </section>
+
                 {userData.occupation === "Faculty" ?
                     <>
                         <section>
                             <div>
                                 {faculty.map(e =>
                                     <>
+                                        {e.Assignments.length == 0 ? e.Assignments.push({aname:""}):""}
                                         <h1 id='facultyFont'> Fauculty: Course</h1>
                                         <input type='text' name={fNum} flag='0' className='facultyCourse' placeholder='Course Name' value={e.cname} onChange={handleNewCourse}/><br/>
                                         <select type='course' name={fNum} flag='1' onChange={handleNewCourse} className='facultyCourse' value={e.type} >
@@ -248,7 +230,9 @@ function Profile(userInfo){
                                             <option value='TSM'>TSM</option>
                                             <option value='FIT'>FIT</option>
                                         </select><br/>
-                                        <input type='text' name={fNum++} flag='2' className='facultyCourse' placeholder='Course Link'value={e.zoomLink} onChange={handleNewCourse}/>
+                                        <input type='text' name={fNum} flag='2' className='facultyCourse' placeholder='Course Link' value={e.zoomLink} onChange={handleNewCourse} />
+                                        <br/>
+                                        <input type='text' name={fNum++} flag='3' className='facultyCourse' placeholder='Assignment' value={e.Assignments[0].aname} onChange={handleNewCourse} />
                                     </>
                                 )}
                                 <div id="plus">
@@ -276,4 +260,5 @@ function Profile(userInfo){
         </div>
     )
 }
+
 export default Profile;

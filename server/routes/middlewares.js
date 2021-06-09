@@ -1,45 +1,9 @@
 
 
-const cloudinary = require('cloudinary').v2;
-const DatauriParser = require('datauri/parser');
-const multer = require('multer');
 const sequelize = require('sequelize');
 const db = require("../models");
-const{Users, Faculty,Courses, Teaches,Takes,Student} = db;
+const{Users, Faculty,Courses, Teaches,Takes,Student,Assignments,Exams,HaveExam,Have} = db;
 
-const {Model} = require("sequelize");
-const parser = new DatauriParser();
-const ALLOWED_FORMATS = ['image/jpeg','image/png','image/jpg'];
-const formatBufferTo64 = file =>
-    parser.format(path.extname(file.originalname).toString(),file.buffer)
-
-const storage= multer.memoryStorage();
-const upload = multer({
-    storage,
-    fileFilter: function(req,file,cb){
-        if(ALLOWED_FORMATS.includes(file.mimetype)){
-            cb(null,true);
-        }else{
-            cb(new Error('Not supported file type!'),false);
-        }
-    }
-})
-const singleUpload = upload.single('image');
-
-exports.singleUploadCtrl = (req,res,next) =>{
-    singleUpload(req,res,(error)=>{
-        if(error){
-            return res.status(422).send({message:"Image upload fail!"});
-        }
-        next();
-    })
-}
-cloudinary.config({
-    cloud_name: 'dmjiv91uu',
-    api_key: '275859854347512',
-    api_secret: 'igFTtALlFAs8oXOdB5fIb_60PSc'
-});
-const cloudinaryUpload = file => cloudinary.uploader.upload(file);
 //-------------------------------------------------------------------------------------
 exports.isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {//if user is already login, then req.Authenticated() is true.
@@ -72,10 +36,15 @@ exports.findOrCreateUser = async (req,res,next) =>{
 
 exports.findStudentInfo = async (req,res,next) =>{
     console.log(req);
+    console.log('test');
     const student = await Student.findOne({
         where: {uid: req},
-        include: { model:Courses, include:{ model:Faculty}}
-    }).catch( r => { console.error('error : ' + r)});
+        include: { model:db.Courses,
+            include:{ model:db.Faculty,
+                include:{model:db.Users}}} // student id -> Course -> Faculty
+    })
+        .catch( r => { console.error('error : ' + r)});
+
     return student;
 }
 exports.findFacultyInfo = async (req,res,next) =>{
@@ -83,17 +52,30 @@ exports.findFacultyInfo = async (req,res,next) =>{
     console.log(req);
     const faculty = await db.Faculty.findOne({
         where:{uid:req},
-        include:[db.Courses]
+        include:{model:db.Courses,
+            include:{model:db.Faculty,include:{model:db.Users}},
+            }
+
     }).catch( r => { console.error('error : ' + r)});
     return faculty;
-    // const faculty = await Faculty.findOne({where:{id:1}});
-    // console.log(await faculty.getCourses());
-
-    // await faculty.addCourse(newCourse, { through: { semester:"fall" } });
-    // const result = await Faculty.findOne(
-    //     {where:{ FacultyId:2}},
-    // ).catch( r => { console.error('error : ' + r)});
 }
+exports.findAssignments = async (req,res,next) =>{
+    console.log(req);
+    let courseContainer = [];
+    for (const e of req) {
+        let courseId = e.dataValues.id;
+        console.log('qwer');
+        console.log(courseId);
+        const assignment = await db.Courses.findOne({
+            where: courseId,
+            include:{model:db.Assignments}
+        }).catch( r => { console.error('error : ' + r)});
+        console.log(assignment);
+        courseContainer.push(assignment);
+    }
+    return courseContainer;
+}
+
 //--------------------Student Create, Update ------------------------
 exports.createStudent = async (req,res,next) =>{
     console.log('here2');
@@ -134,18 +116,14 @@ exports.updateFaculty = async (req,res,next) =>{
 }
 //---------------User : find, update,
 exports.findUserInfo = async(req,res,next) =>{
+    console.log(req.body);
     let user = await Users.findOne({where: {id :parseInt(req.body.userId)}});
     return user;
 }
 exports.updateUserInfo = async (req,res,next) =>{
+
     let user = req.body.user;
-    if(req.body.image === undefined){
-        const file64 = formatBufferTo64(req.file);
-        const uploadResult = await cloudinaryUpload(file64.content);
-        user.image = uploadResult.secure_url;
-    }else{
-        user.image = req.body.image;
-    }
+
     user.nickName = req.body.nickName;
     user.major = req.body.major;
     user.name = req.body.name;
@@ -159,7 +137,8 @@ exports.findCourses = async (req,res,next) =>{
     let courses = [];
     const rawCourses = await Courses.findAll({
         where:{type:req.major},
-        include:[db.Faculty]
+        include:{model:db.Faculty,
+            include:{model:db.Users}}
     })
         .catch(r =>{ console.error('error: '+ r)});
     await rawCourses.forEach( e =>{
@@ -183,22 +162,25 @@ exports.deleteMyLecture = async (req,res,next) =>{
     const take = await Takes.findOne({
         where:{
             semester: 'fall',
-            StudentId: req.studentId,
-            CourseId: req.courseId
+            StudentId: parseInt(req.studentId),
+            CourseId: parseInt(req.courseId)
         }
     })
     take.destroy();
     return take;
 }
-// exports.findCoursesById = async (req,res,next) => {
-//
-// }
-//TODO:'no direct update'
+
 exports.createOrUpdateCourses = async (req,res,next) =>{
-    console.log(req);
+    let date =new Date()
     let newCourse;
     let modifiedCourse;
+    let courseId;
+    let result = [];
+    console.log('rewq');
+    console.log(req[0]);
     await req.forEach(  e => {
+        console.log('rewq22');
+        console.log(e.Assignments[0].aname);
         console.log(1);
         if(e.modified){
             console.log(2);
@@ -211,29 +193,74 @@ exports.createOrUpdateCourses = async (req,res,next) =>{
                     status: false,
                     type: e.type
                 }).then(r =>{
+                    console.log('12345');
+                    console.log(req.facultyId);
+                    courseId = r.dataValues.id;
                     console.log(r.dataValues);
                     Teaches.create({
                         CourseId: r.dataValues.id,
-                        FacultyId: e.facultyId,//req.body.FacultyId,
+                        FacultyId: req.facultyId,//req.body.FacultyId,
                         semester: "Fall"
-                    })
-                    return r;
-                }).catch(r =>{ console.error('error: '+ r)})
+                    }).then( r => {
+                        console.log('test33');
+                        console.log(e);
+                        if ( e.Assignments.length> 0) {
+                            Assignments.create({
+                                aname: e.Assignments[0].aname,
+                                dueDate: date.setDate(date.getDate()+14)
+                            }).then(r => {
+                                Have.create({
+                                    CourseId: courseId,
+                                    AssignmentId: r.dataValues.id
+                                })
+                                result.push(r);
+                            })
+                        }
+                        result.push(r);
+                    })}).catch(r =>{ console.error('error: '+ r)})
             }else{//update
                 console.log(4);
+                console.log('here36');
                 modifiedCourse = Courses.findOne({where:{id:e.id}})
                     .then( r =>{
                         r.cname = e.cname;
                         r.zoomLink = e.zoomLink;
                         r.type = e.type;
                         r.save();
+                        courseId = r;
+                    }).then( r =>{
+                        console.log('here33');
+                        console.log(e);
+                        if (e.Assignments.length > 0) {
+                            console.log('here33');
+                            console.log(courseId);
+                            Assignments.findOne({where: courseId.id,}).then(r => {
+                                console.log('here55');
+                                    console.log (courseId);
+                                    console.log(e.Assignments[0].aname);
+                                    r.aname = e.Assignments[0].aname
+                                    r.save();
+                                    console.log(courseId);
+                                    Have.findOrCreate({where:courseId.id,
+                                    defaults:{
+                                        CourseId: courseId.id,
+                                        AssignmentId: r.dataValues.id
+                                    }})
+
+                                result.push(r);
+                            })
+                        }
                     })
                     .catch(r =>{ console.error('error: '+ r)})
                 console.log(5);
-                return null;
             }
         }
     })
+    return result;
+}
+exports.updateAssignment = async (req,res) =>{
+    console.log(req);
+    // await Assignments.findOrCreate({where:})
 }
 exports.wrapAsync = (fn) =>{
     return function (req, res, next) {
