@@ -23,6 +23,7 @@ const Teaches = require('./Teaches')(sequelize,Sequelize);
 const Courses = require('./Courses')(sequelize,Sequelize);
 const HaveExam = require('./HaveExam')(sequelize,Sequelize);
 const User2 = require('./Users2')(sequelize,Sequelize);
+const Courses2 = require('./Courses2')(sequelize,Sequelize);
 
 db.Users = Users;
 db.Assignments = Assignments;
@@ -35,7 +36,7 @@ db.Teaches = Teaches;
 db.Courses = Courses;
 db.HaveExam = HaveExam;
 db.User2 = User2;
-
+db.Courses2= Courses2;
 //---------------------------------------------------------------------------------------------------------
 // Key Constraint
 
@@ -43,11 +44,10 @@ db.User2 = User2;
 db.User2.belongsTo(db.Users,{foreignKey:'uid'});
 db.Student.belongsTo(db.Users,{foreignKey:'uid'});// uid is created automatically in the Student Table
 db.Faculty.belongsTo(db.Users,{foreignKey:'uid'});// uid is created automatically in the Faculty Table
-// db.User2.belongsTo(db.User,{foreignKey:'occupation'});
 //Teaches m:n
+db.Courses2.belongsTo(db.Courses, {foreignKey:'cid'})
 db.Courses.belongsToMany(db.Faculty,{through:'Teaches'}); // CourseId -> Teaches
 db.Faculty.belongsToMany(db.Courses,{through:'Teaches'}); // FacultyId ->Teaches
-
 //Take m:n
 db.Student.belongsToMany(db.Courses,{through:'Takes'}); // n:m relation. one Student can have multiple Courses through Takes
 db.Courses.belongsToMany(db.Student, {through:'Takes'}) // one Course can be consisted from multiple Students

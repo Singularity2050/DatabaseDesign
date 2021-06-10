@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = (sequelize,DataTypes) => {
-    const Courses = sequelize.define('Courses',{
+    const Courses2 = sequelize.define('Courses',{
         status:{
             type: Sequelize.BOOLEAN,
             allowNull: false,
@@ -13,5 +13,5 @@ module.exports = (sequelize,DataTypes) => {
         collate: 'utf8_general_ci',
     })
 
-    return Courses;
+    return Courses2;
 }
