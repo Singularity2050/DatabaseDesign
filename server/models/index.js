@@ -11,6 +11,7 @@ const sequelize = new Sequelize(
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+
 const Users = require('./Users')(sequelize,Sequelize);
 const Assignments = require('./Assignments')(sequelize,Sequelize);
 const Exams = require('./Exams')(sequelize,Sequelize);
@@ -21,7 +22,7 @@ const Takes = require('./Takes')(sequelize,Sequelize);
 const Teaches = require('./Teaches')(sequelize,Sequelize);
 const Courses = require('./Courses')(sequelize,Sequelize);
 const HaveExam = require('./HaveExam')(sequelize,Sequelize);
-// const User2 = require('./Users2')(sequelize,Sequelize);
+const User2 = require('./Users2')(sequelize,Sequelize);
 
 db.Users = Users;
 db.Assignments = Assignments;
@@ -33,12 +34,13 @@ db.Takes = Takes;
 db.Teaches = Teaches;
 db.Courses = Courses;
 db.HaveExam = HaveExam;
-// db.User2 = User2;
-console.log(db.Users);
+db.User2 = User2;
+
 //---------------------------------------------------------------------------------------------------------
 // Key Constraint
 
 //User
+db.User2.belongsTo(db.Users,{foreignKey:'uid'});
 db.Student.belongsTo(db.Users,{foreignKey:'uid'});// uid is created automatically in the Student Table
 db.Faculty.belongsTo(db.Users,{foreignKey:'uid'});// uid is created automatically in the Faculty Table
 // db.User2.belongsTo(db.User,{foreignKey:'occupation'});

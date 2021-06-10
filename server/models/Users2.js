@@ -3,12 +3,6 @@ const Sequelize = require('sequelize');
 
 module.exports = (sequelize,DataTypes) => {
     const User2 = sequelize.define('User2',{
-        occupation:{
-            type: Sequelize.STRING(300),
-            allowNull: true,
-            defaultValue: "Student",
-            primaryKey: true,
-        },
         upload_permission:{
             type: Sequelize.BOOLEAN,
             allowNull: false,
@@ -28,5 +22,5 @@ module.exports = (sequelize,DataTypes) => {
         collate: 'utf8_general_ci',
     })
 
-    return User;
+    return User2;
 };
