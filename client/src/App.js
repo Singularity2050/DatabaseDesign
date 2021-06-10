@@ -7,7 +7,13 @@ import Profile from './page/profile';
 import Courses from './page/courses';
 import './css/ContentPage.css'
 
-const NoMatch = ({location}) => (<div style={{textAlign:"center"}}> <h1>Error!</h1> You are trying to invalid access!<div><code><br/>{location.pathname}<br/><br/> Please go Back to <a href="/content" style={{color:"red"}}>MainPage</a></code></div></div>);
+const NoMatch = ({location}) => (
+    <div style={{textAlign:"center"}}>
+        <h1>Error!</h1>You are trying to invalid access!
+        <div>
+            <code><br/>{location.pathname}
+                <br/><br/> Please go Back to <a href="/content" style={{color:"red"}}>MainPage</a>
+            </code></div></div>);
 
 
 /////////////////
@@ -50,35 +56,28 @@ class App extends React.Component {
         });}
 
     render() {
-        // if(sessionStorage.getItem('userData') == null){
-        //     return (
-        //         <Switch>
-        //             <Route path='/home' render={() => <MainPage message="Please Login !!"/>}/>
-        //
-        //             <Route path='/content' render={() => (
-        //                 <Redirect to='/home'/>)
-        //             }/>
-        //             <Route path='/profile' render={() =>
-        //                 (<Redirect to='/home'/>)
-        //             }/>
-        //             <Route exact path='/' render={() => (<Redirect to='/home'/>)}/>
-        //             <Route component={NoMatch}/>
-        //         </Switch>
-        //
-        //     );
-        // }else {
+        const userData = JSON.parse(sessionStorage.getItem('userData'));
+        let allow = true;
+        let noLogin = true;
+        if(userData == null){
+            noLogin = false;
+        }else{
+            if( userData.verified === undefined || userData.verified === false){
+                allow = false;
+            }
+        }
             return (
                 <Switch>
                     <Route path='/home' render={() => <MainPage message=""/>}/>
 
                     <Route path='/content' render={() =>
-                        <Content function={this.performSearch}/>
+                        allow ? <Content function={this.performSearch}/>:<MainPage message=""/>
                     }/>
                     <Route path='/profile' render={() =>
-                        <Profile function={this.performSearch}/>
+                        noLogin ? <Profile function={this.performSearch}/>: <MainPage message=""/>
                     }/>
                     <Route path='/courses/:major' render={() =>
-                        <Courses/>
+                        allow? <Courses/>:<MainPage message=""/>
                     }/>
                     <Route exact path='/' render={() => (<Redirect to='/home'/>)}/>
                     <Route component={NoMatch}/>
