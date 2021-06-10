@@ -30,7 +30,6 @@ export var TitleList = createClass({
         const user = JSON.parse(sessionStorage.getItem('userData'));
 
         findMyInfoAPIMethod(user.occupation,user.id).then( r =>{
-
             let courses = JSON.parse(sessionStorage.getItem('courseDetail'))
             sessionStorage.removeItem('identity');
             sessionStorage.setItem('identity',JSON.stringify(r));

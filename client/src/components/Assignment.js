@@ -22,11 +22,17 @@ export var Assignment = createClass({
 
 
     getInitialState: function() {
-        return {data: imageData.cse, mounted: false, lectureData:[]};
+        return {data: imageData.cse, mounted: false, lectureData:this.props.lecture};
     },
 
     loadContent: function() {
-        console.log(this.props.lecture);
+        const user = JSON.parse(sessionStorage.getItem('userData'));
+        findMyInfoAPIMethod(user.occupation,user.id).then( r =>{
+            sessionStorage.removeItem('identity');
+            sessionStorage.setItem('identity',JSON.stringify(r));
+            this.setState({lectureData: r === null? []: r.myCourseInfo})
+            console.log(this.state.lectureData);
+        })
     },
     componentDidMount: function() {
         this.loadContent();
@@ -43,7 +49,7 @@ export var Assignment = createClass({
                 <div className="Title">
                     <h1>{this.props.title}</h1>
                     <div className="titles-wrapper">
-                        {this.props.lecture.map( (e) => {
+                        {this.state.lectureData.map( (e) => {
                             return ( <Item imageLink={this.state.data[index--]} lecture={e} userData={this.props.user}/>);
                         })}
                     </div>
@@ -65,6 +71,7 @@ export function Item(e){
     }
 
     // console.log(e.lecture.Assignments[0].aname);
+    console.log(e);
     const isAssignment = e.lecture.Assignments[0].aname !== "";
 
     return (

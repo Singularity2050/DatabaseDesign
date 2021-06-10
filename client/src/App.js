@@ -36,26 +36,10 @@ class App extends React.Component {
     performSearch(e) {
         // stop form from submitting
         e.preventDefault();
-
-        // get the value
-        let val = $('.Search input').val();
-
-        // Do the thing
-        let requestUrl = 'https://api.themoviedb.org/3/search/multi?query=' + val + '&api_key=' + this.apiKey;
-
-        $.ajax({
-            url: requestUrl,
-            dataType: 'json',
-            cache: false,
-            success: function (data) {
-                this.setState({data: data});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });}
+    }
 
     render() {
+
         const userData = JSON.parse(sessionStorage.getItem('userData'));
         let allow = true;
         let noLogin = true;

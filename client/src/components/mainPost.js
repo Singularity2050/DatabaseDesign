@@ -16,7 +16,7 @@ let Hero = createClass({
                     <h2> Fall Semester now available</h2>
                     <p>STONYFLIX Is Opening!! </p>
                     <div className="button-wrapper">
-                        <HeroButton primary={true} text="Watch now" link="https://blackboard.stonybrook.edu"/>
+                        <HeroButton primary={true} text="Go to Blackboard" link="https://blackboard.stonybrook.edu"/>
                         <HeroButton2 primary={false} text="My list" link="#myList"/>
                     </div>
                 </div>

@@ -17,6 +17,7 @@ function ContentPage(props){
     console.log(major);
     const imageFile  = imageData.cse;
     const userData = JSON.parse(sessionStorage.getItem('userData'));
+
     return(
         <div>
             <Header user={props.user} onSubmit={props.performSearch} />
