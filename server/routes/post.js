@@ -68,7 +68,6 @@ const cloudinaryUpload = file => cloudinary.uploader.upload(file);
 const { request } = require('http');
 const Op = Sequelize.Op;
 
-
 const {createFaculty, updateUserInfo,createStudent} = require("./middlewares");
 router.get('/findMyData/:occupation/:uid',wrapAsync(async function(req,res,next){
     let container;
@@ -82,13 +81,11 @@ router.get('/findMyData/:occupation/:uid',wrapAsync(async function(req,res,next)
         console.log(myInfo.dataValues.Courses);
         myCourse = myInfo.dataValues.Courses;
         myCourseInfo = await findAssignments (myCourse);
-        console.log(myCourseInfo);
     }else if(req.params.occupation === "Faculty"){
         myInfo = await findFacultyInfo(req.params.uid);
         console.log('qwe22');
         myCourse = myInfo.dataValues.Courses;
         myCourseInfo = await findAssignments (myCourse);
-        console.log(myCourseInfo);
     }
     myInfo.CourseInfo = myCourseInfo;
     console.log('start2"');
@@ -96,7 +93,6 @@ router.get('/findMyData/:occupation/:uid',wrapAsync(async function(req,res,next)
         myInfo,
         myCourseInfo
     }
-    console.log(myInfo.CourseInfo);
     res.json(container);
 }))
 router.get('/addMyCourse/:courseId/:studentId',wrapAsync(async function (req,res,next){
@@ -118,9 +114,7 @@ router.get('/course/:major',wrapAsync(async function(req,res,next){
 
 router.post('/profileData',singleUploadCtrl,wrapAsync(async function(req,res,next){
     //testing
-    console.log(typeof req.body.newCourse ==='string');
     // console.log(typeof req.body.newCourse);
-
     // console.log()
     //
 
@@ -129,7 +123,6 @@ router.post('/profileData',singleUploadCtrl,wrapAsync(async function(req,res,nex
     let courses;
     let userData = [];// User Basic data
     //get userdata from database, if no, it will return null
-    console.log(req.body);
     const rawUserData = await findUserInfo(req);
     const user = rawUserData.dataValues;
     if(typeof req.body.newCourse === 'string'){
@@ -137,7 +130,6 @@ router.post('/profileData',singleUploadCtrl,wrapAsync(async function(req,res,nex
         if(req.body.newCourse !=='undefined'){
             objectCourse = JSON.parse(req.body.newCourse);
         }
-        console.log(objectCourse);
     }
     console.log('-----------------------');
     console.log(user.verified);
@@ -158,6 +150,7 @@ router.post('/profileData',singleUploadCtrl,wrapAsync(async function(req,res,nex
                 console.log('check')
                 objectCourse.facultyId = identity.dataValues.id
                 let createdCourse = await createOrUpdateCourses(objectCourse);
+                console.log('checkhere')
             }
         }
     }else{
@@ -178,7 +171,7 @@ router.post('/profileData',singleUploadCtrl,wrapAsync(async function(req,res,nex
     }
     //update user Info
     const updateUser = await updateUserInfo(req);
-
+    console.log('here331');
     //Merge identity and User Info
     userData.push(updateUser);
     userData.push(identity);
@@ -194,9 +187,12 @@ router.get('/courseDetail/:occupation/:id',wrapAsync(async function(req,res,next
         identity =await findStudentInfo(req.params.id)
     }else{
         identity = await findFacultyInfo(req.params.id)
-        console.log(identity);
     }
     res.json(identity);
 }));
-
+router.get('/deleteCourse/:id',wrapAsync(async function(req,res,next){
+    const course = await Courses.destroy({where:{id:req.params.id}});
+    console.log(course);
+    res.json(course);
+}))
 module.exports = router;

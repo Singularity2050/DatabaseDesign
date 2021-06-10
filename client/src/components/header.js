@@ -32,7 +32,12 @@ let Logo = createClass({
         );
     }
 });
-
+const myList = () =>{
+    window.location.href= "/content#myList";
+}
+const myMajorCourse = () =>{
+    window.location.href= "/courses/"+JSON.parse(sessionStorage.getItem('userData')).major
+}
 // Navigation
 let Navigation = createClass({
     render: function() {
@@ -40,8 +45,8 @@ let Navigation = createClass({
             <div id="navigation" className="Navigation">
                 <nav>
                     <ul>
-                        <li>Browse</li>
-                        <li>MY COURSE</li>
+                        <li onClick={myMajorCourse}>Browse My Major</li>
+                        <li onClick={myList}>MY COURSE</li>
                         {Dropdown()}
                     </ul>
                 </nav>

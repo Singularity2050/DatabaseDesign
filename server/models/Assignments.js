@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 module.exports = (sequelize,DataTypes) => {
     const Assignments = sequelize.define('Assignments',{
             aname:{
-                type: Sequelize.STRING(45),
+                type: Sequelize.STRING(1000),
                 allowNull: false,
                 unique: false,
             },

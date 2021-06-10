@@ -36,14 +36,15 @@ export var Assignment = createClass({
         this.setState({ mounted: false });
     },
     render: function() {
-        let index =0;
+        let index =this.state.data.length -1;
+
         return (
             <div ref="titlecategory" className="TitleList" data-loaded={this.state.mounted}>
                 <div className="Title">
                     <h1>{this.props.title}</h1>
                     <div className="titles-wrapper">
                         {this.props.lecture.map( (e) => {
-                            return ( <Item imageLink={this.state.data[index++]} lecture={e} userData={this.props.user}/>);
+                            return ( <Item imageLink={this.state.data[index--]} lecture={e} userData={this.props.user}/>);
                         })}
                     </div>
                 </div>
@@ -62,40 +63,16 @@ export function Item(e){
     if(e.lecture !== undefined){
         isLecture = true;
     }
-    if(window.location.pathname === '/content'){
-        if(e.userData.occupation === 'Faculty'){
-            dynamicData = undefined;
-        }else{
-            dynamicData = e.lecture.Takes.StudentId;
-        }
-    }else{
-        console.log(e);
-        if(e.userData.occupation === 'Faculty'){
-            dynamicData = undefined;
-        }else{
-            dynamicData = e.identity.myInfo.id;
-            console.log(e);
-            if(e.identity.myCourseInfo !== undefined){
-                for( let i = 0 ; i < e.identity.myCourseInfo.length; i ++){
-                    if(e.identity.myCourseInfo[i].id === e.lecture.id){
-                        isTaking = true;
-                        break;
-                    }else{
-                        isTaking = false;
-                    }
-                }
-            }
-        }
-    }
+
     // console.log(e.lecture.Assignments[0].aname);
-    const isAssignment = e.lecture.Assignments.length !== 0;
-    console.log(isAssignment);
+    const isAssignment = e.lecture.Assignments[0].aname !== "";
+
     return (
         <>
             {isLecture ?
                 isAssignment?
                 <div className="Item"  style={{backgroundImage: 'url(' + e.imageLink + ')'}} >
-                    <a href={window.location.pathname === '/content'? e.lecture.Assignments[0].aname: '/' } target="_blank" rel="noopener noreferrer">
+                    <a href={e.lecture.Assignments[0].aname} target="_blank" rel="noopener noreferrer">
                         <div className="overlay">
                             <div className="title">Course: {e.lecture.cname}</div>
                             <div className="plot">Due Date: {e.lecture.Assignments[0].dueDate}</div>

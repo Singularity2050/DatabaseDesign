@@ -72,6 +72,14 @@ export const addMyCourseAPI = (courseId,studentId,success) =>{
         .then(parseJSON)
         .then(success);
 }
+export const deleteCourseAPI = (courseId,success) =>{
+    return fetch(`/api/deleteCourse/${courseId}`,{
+        ...defaultHeaders,
+    }).then(checkStatus)
+        .then(checkStatus)
+        .then(parseJSON)
+        .then(success);
+}
 //
 // export const getDataAPIMethod = (success) => {
 //     return fetch('/api/questions',{

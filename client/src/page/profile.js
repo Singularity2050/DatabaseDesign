@@ -4,7 +4,7 @@ import defaultImage from '../image/default.png'
 import '../css/Profile.css';
 import {GoogleLogout} from "react-google-login";
 import Header from "../components/header";
-import {findMyInfoAPIMethod} from "../api/client";
+import {deleteCourseAPI, findMyInfoAPIMethod} from "../api/client";
 
 
 function Profile(userInfo){
@@ -61,7 +61,12 @@ function Profile(userInfo){
         assignment.push({aname:""});
         setFaculty([...faculty,{'cname':"",'zoomLink':"",'type':"","Assignments":assignment}])
     }
-    const deleteCourse = () =>{
+    const deleteCourse = (element) =>{
+        if(faculty[faculty.length-1].id !== undefined){
+            deleteCourseAPI(faculty[faculty.length-1].id).then(r =>{
+                console.log(r);
+            })
+        }
         const list = [];
         faculty.forEach( e =>{list.push(e)})
         list.pop();
@@ -127,7 +132,7 @@ function Profile(userInfo){
             const sessionData = await uploadImage(formData).catch( r =>{ console.error('error :' + r)})
             console.log(sessionData);
             // sessionStorage.removeItem('identity')
-            console.log(sessionData);
+
             sessionStorage.setItem('userData',JSON.stringify(sessionData[0]));
             // sessionStorage.setItem('identity',JSON.stringify(sessionData[1]));
             document.getElementById('profilePageImage').src = selectedImage;

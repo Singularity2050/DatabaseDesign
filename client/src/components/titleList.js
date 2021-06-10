@@ -52,7 +52,7 @@ export var TitleList = createClass({
         return (
             <div ref="titlecategory" className="TitleList" data-loaded={this.state.mounted}>
                 <div className="Title">
-                    <h1>{this.props.title}</h1>
+                    <h1 id="myList">{this.props.title}</h1>
                     <div className="titles-wrapper">
                         {this.state.lectureData.map( (e) => {
                           return ( <Item imageLink={this.state.data[index++]} lecture={e} userData={this.props.user}/>);
@@ -100,11 +100,15 @@ export function Item(e){
             }
         }
         console.log(dynamicData);
+        if(e.lecture.zoomLink === undefined){
+            e.lecture.zoomLink = "#"
+        }
         return (
             <>
             {isLecture ?
             <div className="Item"  style={{backgroundImage: 'url(' + e.imageLink + ')'}} >
-                    <a href={window.location.pathname === '/content'? e.lecture.zoomLink: '/' } target="_blank" rel="noopener noreferrer">
+                {window.location.pathname === '/content'?
+                    <a href= {e.lecture.zoomLink} target="_blank" rel="noopener noreferrer">
                     <div className="overlay">
                             <div className="title">{e.lecture.cname}</div>
                             <div className="plot">Faculty : {e.lecture.Faculties[0].User.name}</div>
@@ -116,9 +120,21 @@ export function Item(e){
                             <ListToggle courseId={e.lecture.id} facultyId={e.lecture.Faculties[0].id} studentId={dynamicData} isToggle={isTaking}/>
                         }
                     </div>
-                </a>
-            </div>
+                </a>:
+                    <div className="overlay">
+                        <div className="title">{e.lecture.cname}</div>
+                        <div className="plot">Faculty : {e.lecture.Faculties[0].User.name}</div>
+                        <div className="plot">Office : {e.lecture.Faculties[0].office}</div>
+                        <div className="plot">Semester : {e.lecture.Faculties[0].Teaches.semester}</div>
+                        <div className="plot">Zoom Available: {e.lecture.status? "Available":"Disable"}</div>
+                        {dynamicData === undefined || window.location.pathname === '/content'?
+                            <></> :
+                            <ListToggle courseId={e.lecture.id} facultyId={e.lecture.Faculties[0].id} studentId={dynamicData} isToggle={isTaking}/>
+                        }
+                    </div>}
+                    </div>
                     : <></>}
+
             </>
         );
 };
