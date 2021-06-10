@@ -12,7 +12,7 @@ const NoMatch = ({location}) => (
         <h1>Error!</h1>You are trying to invalid access!
         <div>
             <code><br/>{location.pathname}
-                <br/><br/> Please go Back to <a href="/content" style={{color:"red"}}>MainPage</a>
+                <br/><br/> Please go Back to <a href="/" style={{color:"red"}}>MainPage</a>
             </code></div></div>);
 
 
