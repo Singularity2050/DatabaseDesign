@@ -94,27 +94,17 @@ page.
 Relationships are represented by the diamonds (Takes, Teaches, Have, HaveExam).
 10 tables before normalization and 12 tables after normalization.
 
-![스크린샷 2022-06-23 오후 3.38.48.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/00820f45-f6ee-445e-92cb-31f92905da51/스크린샷_2022-06-23_오후_3.38.48.png)
+<img width="701" alt="Screenshot 2023-08-25 at 4 53 23 PM" src="https://github.com/Singularity2050/DatabaseDesign/assets/67400401/af14e971-38de-46bb-bb68-893a8c821982">
+<img width="678" alt="Screenshot 2023-08-25 at 4 54 04 PM" src="https://github.com/Singularity2050/DatabaseDesign/assets/67400401/f6f55f00-9e11-44ad-868e-7e3d0a69a30f">
 
-![스크린샷 2022-06-23 오후 3.39.11.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ea82b6c5-7e49-4e97-bda4-5a17c848d642/스크린샷_2022-06-23_오후_3.39.11.png)
 
 # 📒Normalization
+<img width="408" alt="Screenshot 2023-08-25 at 4 56 15 PM" src="https://github.com/Singularity2050/DatabaseDesign/assets/67400401/b6de501a-6234-4228-9ee6-3ca7ac0ac1ad">
+<img width="434" alt="Screenshot 2023-08-25 at 4 56 38 PM" src="https://github.com/Singularity2050/DatabaseDesign/assets/67400401/08f85400-b02d-4d49-abfd-800e0650f6ac">
+<img width="443" alt="Screenshot 2023-08-25 at 4 56 47 PM" src="https://github.com/Singularity2050/DatabaseDesign/assets/67400401/747d08cc-8a1f-4c78-b1f3-1d03906082ea">
+<img width="432" alt="Screenshot 2023-08-25 at 4 56 58 PM" src="https://github.com/Singularity2050/DatabaseDesign/assets/67400401/ab61eca4-5954-491e-8679-46fce21797f4">
+<img width="432" alt="Screenshot 2023-08-25 at 4 57 10 PM" src="https://github.com/Singularity2050/DatabaseDesign/assets/67400401/778c277f-6155-46fe-8df4-8e60ca4b4a8a">
 
-![스크린샷 2022-06-23 오후 3.40.52.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a743685d-2128-454d-99b5-e1a482273899/스크린샷_2022-06-23_오후_3.40.52.png)
-
-![스크린샷 2022-06-23 오후 3.40.13.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/af161edb-01a4-46bb-8692-cb0b7467d3fd/스크린샷_2022-06-23_오후_3.40.13.png)
-
-![스크린샷 2022-06-23 오후 3.41.22.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f12217c6-5bfd-441f-8fc7-a10a791088c2/스크린샷_2022-06-23_오후_3.41.22.png)
-
-![스크린샷 2022-06-23 오후 3.46.09.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ed236486-2c01-46f4-8086-dcd8bcd91813/스크린샷_2022-06-23_오후_3.46.09.png)
-
-![스크린샷 2022-06-23 오후 3.42.49.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d1d382fc-020c-40a3-9931-b571d9c5945b/스크린샷_2022-06-23_오후_3.42.49.png)
-
-![스크린샷 2022-06-23 오후 3.44.43.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/52e99aac-e95e-4200-9568-b264f96c19a1/스크린샷_2022-06-23_오후_3.44.43.png)
-
-![스크린샷 2022-06-23 오후 3.47.13.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f5d6a558-fffd-4c2e-aea5-14b58dcf2a1e/스크린샷_2022-06-23_오후_3.47.13.png)
-
-![스크린샷 2022-06-23 오후 3.47.25.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6c34ac8c-871e-4bd9-8101-94353cb5a9ed/스크린샷_2022-06-23_오후_3.47.25.png)
 
 # 📒 User Documentation
 
@@ -170,15 +160,5 @@ Also, we would add a streaming service where faculties can upload lecture videos
 users can watch the lecture videos through our application.
 
 # 🖼️ Example Image
+<img width="723" alt="Screenshot 2023-08-25 at 4 57 49 PM" src="https://github.com/Singularity2050/DatabaseDesign/assets/67400401/8f7dd9ea-d88f-4c43-9fb3-52acf40d2a69">
 
-![KakaoTalk_Photo_2022-06-23-16-02-33-1-min.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/95d242be-53bf-4fce-9cfb-05e0e23197b5/KakaoTalk_Photo_2022-06-23-16-02-33-1-min.png)
-
-![KakaoTalk_Photo_2022-06-23-16-02-33-2.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c632d7bd-fcd4-47c3-8008-9adb718aceaf/KakaoTalk_Photo_2022-06-23-16-02-33-2.png)
-
-![KakaoTalk_Photo_2022-06-23-16-02-33-5.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ec921a94-d324-44f0-b2f0-440ae4bcaf70/KakaoTalk_Photo_2022-06-23-16-02-33-5.png)
-
-![KakaoTalk_Photo_2022-06-23-16-02-33-3.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/157f9aac-5f66-4328-bc61-8ef91dafbf49/KakaoTalk_Photo_2022-06-23-16-02-33-3.png)
-
-![KakaoTalk_Photo_2022-06-23-16-02-33-6.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4a783d48-2422-4ba0-90be-3b33caabc18c/KakaoTalk_Photo_2022-06-23-16-02-33-6.png)
-
-![KakaoTalk_Photo_2022-06-23-16-02-33-4.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c1bb8440-7b57-49b5-b1f6-b0a2024912ad/KakaoTalk_Photo_2022-06-23-16-02-33-4.png)
